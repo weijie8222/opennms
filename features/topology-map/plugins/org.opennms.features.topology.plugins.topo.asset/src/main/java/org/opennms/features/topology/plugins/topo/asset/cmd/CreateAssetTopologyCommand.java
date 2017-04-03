@@ -35,6 +35,7 @@ import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.opennms.features.topology.plugins.topo.asset.AssetGraphMLProvider;
 import org.opennms.features.topology.plugins.topo.asset.GeneratorConfig;
 import org.opennms.features.topology.plugins.topo.asset.GeneratorConfigBuilder;
+import org.opennms.features.topology.plugins.topo.asset.layers.NodeParamLabels;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,19 +69,32 @@ public class CreateAssetTopologyCommand extends OsgiCommandSupport {
 	@Option(name = "-p", aliases = "--preferredLayout", description = "Preferred Layout", required = false, multiValued = false)
 	String preferredLayout;
 
+	@Option(name = "-u", aliases = "--uriParams", description = "Configuration as URI parameter string. Using this option will override all other options.", required = false, multiValued = false)
+	String uriParams;
+
 	@Override
 	protected Object doExecute() throws Exception {
 		try{
-			final GeneratorConfig config = new GeneratorConfigBuilder()
-					.withProviderId(providerId)
-					.withHierarchy(assetLayers)
-					.withLabel(label)
-					.withBreadcrumbStrategy(breadcrumbStrategy)
-					.withPreferredLayout(preferredLayout)
-					.withFilters(filter)
-					.build();
+			GeneratorConfig config=null;
+
+			if( uriParams!=null && ! uriParams.trim().isEmpty() ){
+				config = new GeneratorConfigBuilder()
+				.withUriQueryString(uriParams)
+				.build();
+			}
+			else{
+				config = new GeneratorConfigBuilder()
+				.withProviderId(providerId)
+				.withHierarchy(assetLayers)
+				.withLabel(label)
+				.withBreadcrumbStrategy(breadcrumbStrategy)
+				.withPreferredLayout(preferredLayout)
+				.withFilters(filter)
+				.build();
+			}
 
 			System.out.println("Creating Asset Topology from configuration " + config);
+			System.out.println("Equivilent URI:" + GeneratorConfigBuilder.toUriString(config));
 			assetGraphMLProvider.createAssetTopology(config);
 			System.out.println("Asset Topology created");
 		} catch (Exception e) {

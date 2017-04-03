@@ -94,14 +94,14 @@ Filters are defined using the same asset table keys which are available for the 
 [options="header, autowidth"]
 |===
 | Operation  | Definition  | Example
-| OR | key1=value1,value2 alternatively key1=value1&key1=value2 | asset-region=north,south
-| AND | key1=val1&key2=val2 | asset-region=north&asset-site=23
+| OR | key1=value1,value2 alternatively key1=value1;key1=value2 | asset-region=north,south
+| AND | key1=val1;key2=val2 | asset-region=north;asset-site=23
 | NOT | key1=!val1 | asset-site=!23
 |===
 
 Thus the following configuration means include only nodes with region `north` or `south` but exclude all nodes with site `23`.
 ----
-filter=asset-region=north,south&asset-site=!23
+filter=asset-region=north,south;asset-site=!23
 ----
 
 The filters are designed to treat all selected text key entries as comma separated values (csv). This allows OpenNMS node-categories which are
@@ -109,7 +109,7 @@ many to many entries to be dealt with as a comma separated list of values; route
 Thus we can select based on multiple separate node categories. The following configuration means show routers and servers on all sites except site 23.
 
 ----
-filter=node-categories=routers,servers&asset-site=!23
+filter=node-categories=routers,servers;asset-site=!23
 ----
 
 The filters treat all asset table entries as comma seperated variables (csv). This also means that, 
@@ -122,7 +122,7 @@ You can also negate a regular expression by preceding it with !~.
 
 The following example will match against regions 'Stuttgart' and 'Isengard' and any site name which ends in 4
 ----
-filter=asset-region=~.*gar(t|d)&asset-site=~.*4
+filter=asset-region=~.*gar(t|d);asset-site=~.*4
 ----
 
 === Configuration
@@ -170,13 +170,19 @@ The following commands are available
 
 -b, --breadcrumbStrategy : Bread Crumb Strategy
 
+-u, --uriParams :Configuration as URI parameter string. (Using this option will override all other options).
+
 | asset-topology:remove        | Removes Asset Topology.   | 
 -i, --providerId : Unique providerId of asset topology
 
 |===
 
-Any debug data is created in <opennms home>/data/tmp/AssetListFile.xml containing all the nodes and associated asset fields.
- (This file can be used for debugging. A similar file is used in the unit tests for this module).
+The -u, --uriParams option allows the entire graph config to be entered as a single string containing 
+the same parameters separated by an '&' character. If the --uriParams option is used, all other options are ignored. 
+Any parameters not included in the --uriParams string will be set with default settings.
+----
+--uriParams 'providerId=asset1&label=Asset Topology Provider&assetLayers=asset-country,asset-city,asset-building&filter=asset-displaycategory=!testDisplayCategory;node-foreignsource=testForeignSource1,testForeignSource2&preferredLayout=Grid Layout&breadcrumbStrategy=SHORTEST_PATH_TO_ROOT'
+----
 
 === Creating Asset Based Topologies Using _{opennms-product-name}_ events
 
