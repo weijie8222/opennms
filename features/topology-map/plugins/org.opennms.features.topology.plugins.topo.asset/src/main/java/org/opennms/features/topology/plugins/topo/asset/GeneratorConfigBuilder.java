@@ -107,10 +107,10 @@ public class GeneratorConfigBuilder {
 		return this;
 	}
 
-	// interprets each name=value&name=value pair in uri query string
-	public GeneratorConfigBuilder withUriQueryString(String uriString){
-		if(uriString != null && !uriString.trim().isEmpty()) {
-			final List<String> parameters = Arrays.asList(uriString.split("&")).stream()
+	// interprets each name=value&name=value pair in graphDefinitionUri string
+	public GeneratorConfigBuilder withGraphDefinitionUri(String graphDefinitionUri){
+		if(graphDefinitionUri != null && !graphDefinitionUri.trim().isEmpty()) {
+			final List<String> parameters = Arrays.asList(graphDefinitionUri.split("&")).stream()
 					.filter(h -> h != null && !h.trim().isEmpty())
 					.map(h -> h.trim())
 					.collect(Collectors.toList());
@@ -159,7 +159,7 @@ public class GeneratorConfigBuilder {
 		return config;
 	}
 	
-	public static String toUriString(GeneratorConfig config){
+	public static String toGraphDefinitionUriString(GeneratorConfig config){
 		StringBuilder sb= new StringBuilder();
 		if (config.getProviderId() != null) {
 			sb.append(UriParameters.PROVIDER_ID+"="+config.getProviderId());

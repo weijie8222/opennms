@@ -26,7 +26,7 @@ public class ConfigURITest{
 		boolean expectedException=false;
 		try {
 			GeneratorConfig config = new GeneratorConfigBuilder()
-			.withUriQueryString(uriString)
+			.withGraphDefinitionUri(uriString)
 			.build();
 			
 		} catch ( IllegalArgumentException e){
@@ -43,7 +43,7 @@ public class ConfigURITest{
 		boolean expectedException=false;
 		try {
 			GeneratorConfig config = new GeneratorConfigBuilder()
-			.withUriQueryString(uriString)
+			.withGraphDefinitionUri(uriString)
 			.build();
 		} catch ( IllegalArgumentException e){
 			expectedException=true;
@@ -77,7 +77,7 @@ public class ConfigURITest{
 			
 			//check config builds from uri string
 			GeneratorConfig config = new GeneratorConfigBuilder()
-			.withUriQueryString(uriString)
+			.withGraphDefinitionUri(uriString)
 			.build();
 			
 			//check values
@@ -95,11 +95,11 @@ public class ConfigURITest{
 			assertEquals(config.getFilters(),filters);
 			
 			// generate new uri string from config
-			String uriOut=GeneratorConfigBuilder.toUriString(config);
+			String uriOut=GeneratorConfigBuilder.toGraphDefinitionUriString(config);
 			LOG.debug("    uriOut="+uriOut);
 			
 			GeneratorConfig config2 = new GeneratorConfigBuilder()
-			.withUriQueryString(uriOut)
+			.withGraphDefinitionUri(uriOut)
 			.build();
 			
 			assertTrue(config.equals(config2));

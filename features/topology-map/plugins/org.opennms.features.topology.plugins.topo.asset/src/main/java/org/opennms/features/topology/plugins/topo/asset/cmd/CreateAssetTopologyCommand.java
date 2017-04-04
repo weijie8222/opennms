@@ -79,7 +79,7 @@ public class CreateAssetTopologyCommand extends OsgiCommandSupport {
 
 			if( uriParams!=null && ! uriParams.trim().isEmpty() ){
 				config = new GeneratorConfigBuilder()
-				.withUriQueryString(uriParams)
+				.withGraphDefinitionUri(uriParams)
 				.build();
 			}
 			else{
@@ -94,7 +94,7 @@ public class CreateAssetTopologyCommand extends OsgiCommandSupport {
 			}
 
 			System.out.println("Creating Asset Topology from configuration " + config);
-			System.out.println("Equivilent URI:" + GeneratorConfigBuilder.toUriString(config));
+			System.out.println("Equivilent URI:" + GeneratorConfigBuilder.toGraphDefinitionUriString(config));
 			assetGraphMLProvider.createAssetTopology(config);
 			System.out.println("Asset Topology created");
 		} catch (Exception e) {
