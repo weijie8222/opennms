@@ -26,33 +26,49 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package org.opennms.features.topology.plugins.topo.asset.filter;
+package org.opennms.features.graphml.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public class AndFilter<T> implements Filter<T> {
+import org.graphdrawing.graphml.GraphmlType;
 
-	private final List<Filter> andFilters;
+public class InMemoryGraphmlRepository implements GraphmlRepository {
 
-    public AndFilter(Filter... filters) {
-    	this(filters == null ? new ArrayList<>() : Arrays.asList(filters));
-    }
-    
-	public AndFilter(List<Filter> andFilters){
-		this.andFilters= Objects.requireNonNull(andFilters);
-	}
+    private final Map<String, GraphmlType> repository = new HashMap<>();
 
     @Override
-    public boolean apply(T value) {
-		for(Filter f : andFilters) {
-			if(! f.apply(value)) {
-				return false;
-			}
-		}
-		return true;
-	}
-    
+    public GraphmlType findByName(String name) throws IOException {
+        Objects.requireNonNull(name);
+        validateExists(name);
+        return repository.get(name);
+    }
+
+    @Override
+    public void save(String name, String label, GraphmlType graphmlType) throws IOException {
+        if (exists(name)) {
+            throw new IOException(name + " already exists");
+        }
+        repository.put(name, graphmlType);
+    }
+
+    @Override
+    public void delete(String name) throws IOException {
+        validateExists(name);
+        repository.remove(name);
+    }
+
+    @Override
+    public boolean exists(String name) {
+        return repository.get(name) != null;
+    }
+
+    private void validateExists(String name) {
+        if (!exists(name)) {
+            throw new NoSuchElementException("No GraphML file found with name  " + name);
+        }
+    }
 }
