@@ -53,7 +53,7 @@ public class AssetGraphMLProvider implements EventListener {
 	public static final String CREATE_ASSET_TOPOLOGY = "uei.opennms.plugins/assettopology/create";
 	public static final String REMOVE_ASSET_TOPOLOGY = "uei.opennms.plugins/assettopology/remove";
 	public static final String REGENERATE_ASSET_TOPOLOGY = "uei.opennms.plugins/assettopology/regenerate";
-	public static final String REGENERATE_ALL_ASSET_TOPOLOGIES = "uei.opennms.plugins/assettopology/regenerateAll";
+	public static final String REGENERATE_ALL_ASSET_TOPOLOGIES = "uei.opennms.plugins/assettopology/regenerateall";
 
 	private static final List<String> ueiList = Lists.newArrayList(CREATE_ASSET_TOPOLOGY, 
 			REMOVE_ASSET_TOPOLOGY,REGENERATE_ASSET_TOPOLOGY,REGENERATE_ALL_ASSET_TOPOLOGIES);

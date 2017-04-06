@@ -30,7 +30,7 @@ package org.opennms.features.topology.plugins.topo.asset;
 
 
 import java.util.Dictionary;
-
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -96,7 +96,7 @@ public class AssetGraphDefinitionRepositoryImpl implements AssetGraphDefinitionR
 		}
 		return generatorConfig;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.opennms.features.topology.plugins.topo.asset.AssetGraphDefinitionRepository#exists()
 	 */
@@ -113,13 +113,13 @@ public class AssetGraphDefinitionRepositoryImpl implements AssetGraphDefinitionR
 
 			String graphDefinitionUri = (String) props.get(propId);
 			if(graphDefinitionUri == null) return false;
-			
+
 			return true;
 
 		} catch (Exception e) {
 			throw new RuntimeException("problem checking if definition exists  "+propId+ " from "+persistentId+".cfg",e);
 		}
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -129,23 +129,24 @@ public class AssetGraphDefinitionRepositoryImpl implements AssetGraphDefinitionR
 	public Map<String,GeneratorConfig> getAllConfigDefinitions(){
 		Map<String,GeneratorConfig> generatorConfigs = new LinkedHashMap<String,GeneratorConfig>();
 
-		Configuration config;
-
 		try {
-			config = configurationAdmin.getConfiguration(persistentId);
+			Configuration config = configurationAdmin.getConfiguration(persistentId);
 			Dictionary<String, Object> props = config.getProperties();
 
 			// if null, there are no configurations
 			if (props == null) return generatorConfigs;
 
-			while(props.keys().hasMoreElements()){
-				String propId = props.keys().nextElement();
-				String providerId=propId.substring(DEFINITION_PREFIX.length());
-				String graphDefinitionUri = (String) props.get(propId);
-				GeneratorConfig generatorConfig = new GeneratorConfigBuilder()
-				.withGraphDefinitionUri(graphDefinitionUri)
-				.build();
-				generatorConfigs.put(providerId, generatorConfig);
+			Enumeration<String> keys = props.keys();
+			while(keys.hasMoreElements()){
+				String propId = keys.nextElement();
+				if(propId.startsWith(DEFINITION_PREFIX)){
+					String providerId=propId.replace(DEFINITION_PREFIX,"");
+					String graphDefinitionUri = (String) props.get(propId);
+					GeneratorConfig generatorConfig = new GeneratorConfigBuilder()
+					.withGraphDefinitionUri(graphDefinitionUri)
+					.build();
+					generatorConfigs.put(providerId, generatorConfig);
+				}
 			}
 
 		} catch (Exception e) {
@@ -200,11 +201,11 @@ public class AssetGraphDefinitionRepositoryImpl implements AssetGraphDefinitionR
 
 			String graphDefinitionUri = (String) props.get(propId);
 			if(graphDefinitionUri != null) throw new IllegalArgumentException("A configuration for providerId "
-					+generatorConfig.getProviderId() +"already exists");
+					+generatorConfig.getProviderId() +" already exists");
 
 			String graphDefinitionUriString = GeneratorConfigBuilder.toGraphDefinitionUriString(generatorConfig);
-			
-			props.put(propId,graphDefinitionUriString );
+
+			props.put(propId,graphDefinitionUriString);
 			config.update(props);
 
 		} catch (Exception e) {

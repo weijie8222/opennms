@@ -53,12 +53,12 @@ public class RegenerateAssetTopologyCommand extends OsgiCommandSupport {
 	@Override
 	protected Object doExecute() throws Exception {
 		try{
-			System.out.println("Removing Asset Topology for providerId=" + providerId);
-			assetGraphMLProvider.removeAssetTopology(providerId);
-			System.out.println("Removed Asset Topology for providerId=" + providerId);
+			System.out.println("Regenerating Asset Topology for providerId=" + providerId);
+			assetGraphMLProvider.regenerateAssetTopology(providerId);
+			System.out.println("Regenerating Asset Topology for providerId=" + providerId);
 		} catch (Exception e) {
-			System.out.println("Error Removing Asset Topology for providerId=" + providerId + " Exception="+e);
-			LOG.error("Error Removing Asset Topology for providerId=" + providerId,e);
+			System.out.println("Error Regenerating Asset Topology for providerId=" + providerId + " Exception="+e);
+			LOG.error("Error Regenerating Asset Topology for providerId=" + providerId,e);
 		}
 		return null;
 	}

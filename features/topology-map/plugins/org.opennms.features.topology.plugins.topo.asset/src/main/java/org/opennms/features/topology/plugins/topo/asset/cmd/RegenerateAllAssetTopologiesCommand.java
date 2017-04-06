@@ -35,7 +35,7 @@ import org.opennms.features.topology.plugins.topo.asset.AssetGraphMLProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Command(scope = "asset-topology", name = "regenerateAll", description="Uses Best Effort to regenerate all asset topologies.")
+@Command(scope = "asset-topology", name = "regenerateall", description="Uses Best Effort to regenerate all asset topologies.")
 public class RegenerateAllAssetTopologiesCommand extends OsgiCommandSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(RegenerateAllAssetTopologiesCommand.class);
 
