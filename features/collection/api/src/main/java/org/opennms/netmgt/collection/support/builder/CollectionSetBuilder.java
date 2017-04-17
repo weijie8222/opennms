@@ -31,6 +31,7 @@ package org.opennms.netmgt.collection.support.builder;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -126,9 +127,15 @@ public class CollectionSetBuilder {
                     return String.format("Resource[%s]/Node[%d]", resource, m_agent.getNodeId());
                 }
             };
-    
+
+            final Map<String, AttributeGroupType> groupTypes = new HashMap<>();
             for (Attribute<?> attribute : entry.getValue()) {
-                final AttributeGroupType groupType = new AttributeGroupType(attribute.getGroup(), AttributeGroupType.IF_TYPE_ALL);
+                AttributeGroupType groupType = groupTypes.get(attribute.getGroup());
+                if (groupType == null) {
+                    groupType = new AttributeGroupType(attribute.getGroup(), AttributeGroupType.IF_TYPE_ALL);
+                    groupTypes.put(attribute.getGroup(), groupType);
+                }
+
                 final AbstractCollectionAttributeType attributeType = new AbstractCollectionAttributeType(groupType) {
                     @Override
                     public String getType() {
