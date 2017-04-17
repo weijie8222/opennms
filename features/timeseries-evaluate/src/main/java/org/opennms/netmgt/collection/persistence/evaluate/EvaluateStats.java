@@ -32,6 +32,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import org.opennms.core.logging.Logging;
 import org.opennms.netmgt.model.ResourceTypeUtils;
@@ -80,6 +81,8 @@ public class EvaluateStats {
 
     /** The numeric samples meter. */
     private final Meter numericSamplesMeter;
+
+    private static final Pattern NUMERIC_NODE_PATTERN = Pattern.compile("\\d+");
 
     /**
      * Instantiates a new evaluate statistics.
@@ -140,7 +143,7 @@ public class EvaluateStats {
      * @param nodeId the node identifier
      */
     public void checkNode(final String nodeId) {
-        if (nodeId.startsWith("fs") || nodeId.matches("\\d+")) {
+        if (nodeId.startsWith("fs") || NUMERIC_NODE_PATTERN.matcher(nodeId).matches()) {
             nodeMap.putIfAbsent(nodeId, true);
         } else {
             interfaceMap.putIfAbsent(nodeId, true);
