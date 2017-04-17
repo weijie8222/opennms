@@ -318,9 +318,13 @@ public class StressCommand extends OsgiCommandSupport {
     private static class MockCollectionAgent implements CollectionAgent {
 
         private final int nodeId;
+        private final String nodeIdStr;
+        private final File storageDir;
 
         public MockCollectionAgent(int nodeId) {
             this.nodeId = nodeId;
+            nodeIdStr = Integer.toString(nodeId);
+            storageDir = calculateStorageDir();
         }
 
         @Override
@@ -365,7 +369,7 @@ public class StressCommand extends OsgiCommandSupport {
 
         @Override
         public String getNodeLabel() {
-            return Integer.toString(nodeId);
+            return nodeIdStr;
         }
 
         @Override
@@ -375,13 +379,12 @@ public class StressCommand extends OsgiCommandSupport {
 
         @Override
         public String getForeignId() {
-            return Integer.toString(nodeId);
+            return nodeIdStr;
         }
 
-        @Override
-        public File getStorageDir() {
+        private File calculateStorageDir() {
             // Copied from org.opennms.netmgt.collectd.org.opennms.netmgt.collectd#getStorageDir
-            File dir = new File(Integer.toString(getNodeId()));
+            File dir = new File(nodeIdStr);
             final String foreignSource = getForeignSource();
             final String foreignId = getForeignId();
             if(isStoreByForeignSource() && foreignSource != null && foreignId != null) {
@@ -389,6 +392,11 @@ public class StressCommand extends OsgiCommandSupport {
                 dir = new File(fsDir, foreignId);
             }
             return dir;
+        }
+
+        @Override
+        public File getStorageDir() {
+            return storageDir;
         }
 
         @Override
