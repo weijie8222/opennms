@@ -234,7 +234,7 @@
             $scope.errorHandler
           );
         } else {
-          window.location.href = 'admin/opennms/index.jsp'; // TODO Is this the best way ?
+          window.location.href = 'admin/index.jsp'; // TODO Is this the best way ?
         }
       });
     };

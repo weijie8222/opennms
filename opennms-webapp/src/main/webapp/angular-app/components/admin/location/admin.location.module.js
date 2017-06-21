@@ -36,7 +36,7 @@
 
 
 	// Minion module
-	angular.module(MODULE_NAME, [ 'ngResource', 'onmsList', 'monitoringLocationsListFilters' ])
+	angular.module(MODULE_NAME, [ 'ngResource', 'onms.ui.list', 'monitoringLocationsListFilters' ])
 	.config(['$routeProvider', function ($routeProvider) {
         $routeProvider
             .when('/admin/monitoringLocations', {
@@ -223,9 +223,4 @@
 		$log.debug('MonitoringLocationsListCtrl initialized');
 	}])
 	;
-
-	// angular.element(document).ready(function() {
-	// 	console.log('Bootstrapping ' + MODULE_NAME);
-	// 	angular.bootstrap(document, [MODULE_NAME]);
-	// });
 }());

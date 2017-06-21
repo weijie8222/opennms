@@ -20,13 +20,13 @@
   *
   * @requires $scope Angular local scope
   * @requires $filter Angular filter
-  * @requires $window Document window
+  * @requires $location Angular location
   * @requires $uibModal Angular UI modal
   * @requires RequisitionsService The requisitions service
   * @requires SynchronizeService The synchronize service
   * @requires growl The growl plugin for instant notifications
   */
-  .controller('RequisitionsController', ['$scope', '$filter', '$window', '$uibModal', 'RequisitionsService', 'SynchronizeService', 'growl', function($scope, $filter, $window, $uibModal, RequisitionsService, SynchronizeService, growl) {
+  .controller('RequisitionsController', ['$scope', '$filter', '$location', '$uibModal', 'RequisitionsService', 'SynchronizeService', 'growl', function($scope, $filter, $location, $uibModal, RequisitionsService, SynchronizeService, growl) {
 
     /**
     * @description The timing status.
@@ -216,7 +216,7 @@
     * @param {string} foreignSource The name of the requisition
     */
     $scope.editForeignSource = function(foreignSource) {
-      $window.location.href = '#admin/requisitions/' + encodeURIComponent(foreignSource) + '/foreignSource';
+      $location.path('admin/requisitions/' + encodeURIComponent(foreignSource) + '/foreignSource');
     };
 
     /**
@@ -228,7 +228,7 @@
     * @param {string} foreignSource The name of the requisition
     */
     $scope.edit = function(foreignSource) {
-      $window.location.href = '#admin/requisitions/' + encodeURIComponent(foreignSource);
+      $location.path('admin/requisitions/' + encodeURIComponent(foreignSource));
     };
 
     /**
@@ -318,7 +318,7 @@
     * @methodOf RequisitionsController
     */
     $scope.editDefaultForeignSource = function() {
-      $window.location.href = '#admin/requisitions/default/foreignSource';
+      $location.path('admin/requisitions/default/foreignSource');
     };
 
     /**

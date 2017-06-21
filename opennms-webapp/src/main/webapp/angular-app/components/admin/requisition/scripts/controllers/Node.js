@@ -19,14 +19,14 @@
   * @requires $scope Angular local scope
   * @requires $routeParams Angular route params
   * @requires $cookies Angular cookies
-  * @requires $window Document window
+  * @requires $location Angular location
   * @requires $uibModal Angular UI modal
   * @requires RequisitionsService The requisitions service
   * @requires growl The growl plugin for instant notifications
   *
   * @description The controller for manage requisitioned nodes (add/edit the nodes on a specific requisition)
   */
-  .controller('NodeController', ['$scope', '$routeParams', '$cookies', '$window', '$uibModal', 'RequisitionsService', 'growl', function($scope, $routeParams, $cookies, $window, $uibModal, RequisitionsService, growl) {
+  .controller('NodeController', ['$scope', '$routeParams', '$cookies', '$location', '$uibModal', 'RequisitionsService', 'growl', function($scope, $routeParams, $cookies, $location, $uibModal, RequisitionsService, growl) {
 
     /**
     * @description The timing status.
@@ -124,7 +124,7 @@
     */
     $scope.goTo = function(url) {
       var doGoTo = function() {
-        $window.location.href = url;
+        $location.path(url);
       };
       if (this.nodeForm.$dirty) {
         bootbox.dialog({
@@ -155,7 +155,7 @@
     * @methodOf NodeController
     */
     $scope.goTop = function() {
-      $scope.goTo('#admin/requisitions');
+      $scope.goTo('admin/requisitions');
     };
 
     /**

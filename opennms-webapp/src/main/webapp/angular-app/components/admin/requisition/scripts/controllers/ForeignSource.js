@@ -18,7 +18,7 @@
   *
   * @requires $scope Angular local scope
   * @requires $routeParams Angular route parameters
-  * @requires $window Document window
+  * @requires $location Angular location
   * @requires $uibModal Angular UI modal
   * @required filterFilter the Angular filter
   * @requires RequisitionsService The requisitions service
@@ -26,7 +26,7 @@
   *
   * @description The controller for manage foreign source definitions (i.e. policies and detectors)
   */
-  .controller('ForeignSourceController', ['$scope', '$routeParams', '$window', '$uibModal', 'filterFilter', 'RequisitionsService', 'growl', function($scope, $routeParams, $window, $uibModal, filterFilter, RequisitionsService, growl) {
+  .controller('ForeignSourceController', ['$scope', '$routeParams', '$location', '$uibModal', 'filterFilter', 'RequisitionsService', 'growl', function($scope, $routeParams, $location, $uibModal, filterFilter, RequisitionsService, growl) {
 
     /**
     * @description The timing status.
@@ -188,7 +188,7 @@
     */
     $scope.goTop = function() {
       var doGoTop = function() {
-        $window.location.href = '#admin/requisitions';
+        $location.path('admin/requisitions');
       };
       $scope.goTo(doGoTop);
     };
@@ -203,9 +203,9 @@
     $scope.goBack = function() {
       var doGoBack = function() {
         if ($scope.foreignSource == 'default') {
-          $window.location.href = '#admin/requisitions';
+          $location.path('admin/requisitions');
         } else {
-          $window.location.href = '#admin/requisitions/' + encodeURIComponent($scope.foreignSource);
+          $location.path('admin/requisitions/' + encodeURIComponent($scope.foreignSource));
         }
       };
       $scope.goTo(doGoBack);

@@ -4,6 +4,7 @@
 
     angular.module('onms.ui.admin', [
         'onms.ui.admin.requisition',
+        'onms.ui.admin.minion',
         'onms.ui.admin.monitoringLocation'
     ])
 

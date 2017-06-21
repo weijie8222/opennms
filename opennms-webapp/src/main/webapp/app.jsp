@@ -41,8 +41,11 @@
     <jsp:param name="script" value='<script type="text/javascript" src="lib/angular-route/angular-route.js"></script>' />
     <jsp:param name="script" value='<script type="text/javascript" src="lib/angular-animate/angular-animate.js"></script>' />
     <jsp:param name="script" value='<script type="text/javascript" src="lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>' />
+    <jsp:param name="script" value='<script type="text/javascript" src="lib/underscore/underscore.js"></script>' />
 
     <jsp:param name="script" value='<script type="text/javascript" src="angular-app/app.module.js"></script>' />
+    <jsp:param name="script" value='<script type="text/javascript" src="angular-app/components/core/list/list.module.js"></script>' />
+    <jsp:param name="script" value='<script type="text/javascript" src="angular-app/components/scanreports/scanreport.module.js"></script>' />
     <jsp:param name="script" value='<script type="text/javascript" src="angular-app/components/admin/admin.module.js"></script>' />
 
     <jsp:param name="link" value='<link rel="stylesheet" type="text/css" href="lib/angular-loading-bar/build/loading-bar.css" />' />
@@ -76,8 +79,8 @@
     <jsp:param name="script" value='<script type="text/javascript" src="angular-app/components/admin/requisition/scripts/controllers/Requisition.js"></script>' />
     <jsp:param name="script" value='<script type="text/javascript" src="angular-app/components/admin/requisition/scripts/controllers/Requisitions.js"></script>' />
 
-    <jsp:param name="script" value='<script type="text/javascript" src="angular-app/components/core/list.module.js"></script>' />
     <jsp:param name="script" value='<script type="text/javascript" src="angular-app/components/admin/location/admin.location.module.js"></script>' />
+    <jsp:param name="script" value='<script type="text/javascript" src="angular-app/components/admin/minion/admin.minion.module.js"></script>' />
 
 
 </jsp:include>

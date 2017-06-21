@@ -193,7 +193,7 @@ function normalizeOffset(offset, maxOffset, limit) {
 (function() {
 	'use strict';
 	
-	var MODULE_NAME = 'onmsList';
+	var MODULE_NAME = 'onms.ui.list';
 
 	String.prototype.endsWith = function(suffix) {
 		return this.indexOf(suffix, this.length - suffix.length) !== -1;
@@ -242,12 +242,12 @@ function normalizeOffset(offset, maxOffset, limit) {
 	angular.module(MODULE_NAME, [ 'ngResource' ])
 
 	.config(function($locationProvider) {
-		$locationProvider.html5Mode({
-			// Use HTML5 
-			enabled: true,
-			// Don't rewrite all <a> links on the page
-			rewriteLinks: false
-		});
+		// $locationProvider.html5Mode({
+		// 	// Use HTML5
+		// 	enabled: true,
+		// 	// Don't rewrite all <a> links on the page
+		// 	rewriteLinks: false
+		// });
 	})
 
 	.directive('onmsListEditInPlace', function() {
@@ -298,7 +298,7 @@ function normalizeOffset(offset, maxOffset, limit) {
 				step: '=',
 				onSubmit: '&onSubmit'
 			},
-			templateUrl: 'js/angular-onmsListEditInPlace.html',
+            templateUrl: 'angular-app/components/core/list/editInPlace.html',
 			transclude: true
 		};
 	})
@@ -354,7 +354,7 @@ function normalizeOffset(offset, maxOffset, limit) {
 				step: '=',
 				onEdit: '&onEdit'
 			},
-			templateUrl: 'js/angular-onmsListEditListInPlace.html',
+			templateUrl: 'angular-app/components/core/list/editListInPlace.html',
 			transclude: true
 		};
 	})
@@ -411,7 +411,7 @@ function normalizeOffset(offset, maxOffset, limit) {
 				step: '=',
 				onEdit: '&onEdit'
 			},
-			templateUrl: 'js/angular-onmsListEditMapInPlace.html',
+			templateUrl: 'angular-app/components/core/list/editMapInPlace.html',
 			transclude: true
 		};
 	})
@@ -647,12 +647,6 @@ function normalizeOffset(offset, maxOffset, limit) {
 
 		$log.debug('ListCtrl initialized');
 	}])
-
-	.run(['$rootScope', '$log', function($rootScope, $log) {
-		$log.debug('Finished initializing ' + MODULE_NAME);
-	}])
-
-	;
 
 	/*
 	angular.element(document).ready(function() {

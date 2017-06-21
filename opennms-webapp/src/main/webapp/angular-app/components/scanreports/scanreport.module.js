@@ -1,7 +1,7 @@
 (function() {
 	'use strict';
 
-	var MODULE_NAME = 'onmsList.scanreport';
+	var MODULE_NAME = 'onms.ui.scanreport';
 
 	// $filters that can be used to create human-readable versions of filter values
 	angular.module('scanReportListFilters', [ 'onmsListFilters' ])
@@ -64,8 +64,14 @@
 	});
 
 	// ScanReport list module
-	angular.module(MODULE_NAME, [ 'ngResource', 'onmsList', 'scanReportListFilters' ])
-
+	angular.module(MODULE_NAME, [ 'ngResource', 'ngRoute', 'onms.ui.list', 'scanReportListFilters' ])
+        .config(['$routeProvider', function ($routeProvider) {
+            $routeProvider
+                .when('/remotepoller/scan', {
+                    templateUrl: 'angular-app/components/scanreports/main.html',
+                    title: 'Remote Poller Scan Reports'
+                })
+        }])
 	.directive('scanReportLogs', function($window) {
 		return {
 			controller: function($log, $scope, ScanReportLogs) {
@@ -100,7 +106,7 @@
 			scope: {
 				report: '='
 			},
-			templateUrl: 'js/angular-onmsList-scanreportlogs.html',
+			templateUrl: 'angular-app/components/scanreports/scanreportlogs.html',
 			transclude: true
 		};
 	})
@@ -114,7 +120,7 @@
 			scope: {
 				report: '='
 			},
-			templateUrl: 'js/angular-onmsList-scanreportdetails.html',
+			templateUrl: 'angular-app/components/scanreports/scanreportdetails.html',
 			transclude: true
 		};
 	})
@@ -285,15 +291,4 @@
 
 		$log.debug('ScanReportListCtrl initialized');
 	}])
-
-	.run(['$rootScope', '$log', function($rootScope, $log) {
-		$log.debug('Finished initializing ' + MODULE_NAME);
-	}])
-
-	;
-
-	angular.element(document).ready(function() {
-		console.log('Bootstrapping ' + MODULE_NAME);
-		angular.bootstrap(document, [MODULE_NAME]);
-	});
 }());

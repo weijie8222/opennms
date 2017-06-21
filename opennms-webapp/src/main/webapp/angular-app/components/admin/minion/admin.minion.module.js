@@ -1,7 +1,7 @@
 (function() {
 	'use strict';
 
-	var MODULE_NAME = 'onmsList.minion';
+	var MODULE_NAME = 'onms.ui.admin.minion';
 
 	// $filters that can be used to create human-readable versions of filter values
 	angular.module('minionListFilters', [ 'onmsListFilters' ])
@@ -37,8 +37,14 @@
 	});
 
 	// Minion list module
-	angular.module(MODULE_NAME, [ 'ngResource', 'onmsList', 'minionListFilters' ])
-
+	angular.module(MODULE_NAME, [ 'ngResource', 'ngRoute', 'onms.ui.list', 'minionListFilters' ])
+        .config(['$routeProvider', function ($routeProvider) {
+            $routeProvider
+                .when('/admin/minion', {
+                    templateUrl: 'angular-app/components/admin/minion/main.html',
+                    title: 'Manage Minions',
+                })}
+        ])
 	/**
 	 * OnmsMinion REST $resource
 	 */
@@ -162,9 +168,4 @@
 	}])
 
 	;
-
-	angular.element(document).ready(function() {
-		console.log('Bootstrapping ' + MODULE_NAME);
-		angular.bootstrap(document, [MODULE_NAME]);
-	});
 }());

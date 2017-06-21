@@ -222,7 +222,7 @@
             <li><a href="app.jsp#admin/monitoringLocations">Manage Monitoring Locations</a></li>
             <li><a href="admin/applications.htm">Manage Applications</a></li>
             <li><a href="distributed/locationMonitorList.htm">Manage Remote Pollers</a></li>
-            <li><a href="minion/index.jsp">Manage Minions</a></li>
+            <li><a href="app.jsp#admin/minion">Manage Minions</a></li>
         </ul>
       </div> <!-- panel-body -->
     </div> <!-- panel -->

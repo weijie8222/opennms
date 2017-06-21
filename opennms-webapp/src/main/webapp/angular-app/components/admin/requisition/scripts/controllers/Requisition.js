@@ -21,13 +21,13 @@
   * @requires $scope Angular local scope
   * @requires $filter Angular filter
   * @requires $cookies Angular cookies
-  * @requires $window Document window
+  * @requires $location Angular location
   * @requires $routeParams Angular route parameters
   * @requires RequisitionsService The requisitions service
   * @requires SynchronizeService The synchronize service
   * @requires growl The growl plugin for instant notifications
   */
-  .controller('RequisitionController', ['$scope', '$filter', '$cookies', '$window', '$routeParams', 'RequisitionsService', 'SynchronizeService', 'growl', function($scope, $filter, $cookies, $window, $routeParams, RequisitionsService, SynchronizeService, growl) {
+  .controller('RequisitionController', ['$scope', '$filter', '$cookies', '$location', '$routeParams', 'RequisitionsService', 'SynchronizeService', 'growl', function($scope, $filter, $cookies, $location, $routeParams, RequisitionsService, SynchronizeService, growl) {
 
     /**
     * @description The timing status.
@@ -109,7 +109,7 @@
     */
     // FIXME Should be called getTop to be consistent with the rest of the controllers
     $scope.goBack = function() {
-      $window.location.href = '#admin/requisitions';
+      $location.path('admin/requisitions');
     };
 
     /**
@@ -120,7 +120,7 @@
     * @methodOf RequisitionController
     */
     $scope.editForeignSource = function() {
-      $window.location.href =  '#admin/requisitions' + encodeURIComponent($scope.foreignSource) + '/foreignSource';
+      $location.path('admin/requisitions' + encodeURIComponent($scope.foreignSource) + '/foreignSource');
     };
 
     /**
@@ -169,7 +169,7 @@
     * @methodOf RequisitionController
     */
     $scope.addNode = function() {
-      $window.location.href = '#admin/requisitions/' + encodeURIComponent($scope.foreignSource) + '/nodes/__new__' + $scope.getVerticalLayout();
+      $location.path('admin/requisitions/' + encodeURIComponent($scope.foreignSource) + '/nodes/__new__' + $scope.getVerticalLayout());
     };
 
     /**
@@ -182,7 +182,7 @@
     * @param {object} The node's object to edit
     */
     $scope.editNode = function(node) {
-      $window.location.href = '#admin/requisitions/' + encodeURIComponent($scope.foreignSource) + '/nodes/' + encodeURIComponent(node.foreignId) + $scope.getVerticalLayout();
+      $location.path('admin/requisitions/' + encodeURIComponent($scope.foreignSource) + '/nodes/' + encodeURIComponent(node.foreignId) + $scope.getVerticalLayout());
     };
 
     /**

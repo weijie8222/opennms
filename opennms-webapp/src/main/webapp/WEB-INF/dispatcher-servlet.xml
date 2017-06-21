@@ -452,7 +452,7 @@
                             </bean>
                             <bean class="org.opennms.web.navigate.LocationBasedNavBarEntry">
                                 <property name="name" value="Scan Reports"/>
-                                <property name="url" value="scanreports/index.jsp"/>
+                                <property name="url" value="app.jsp#remotepoller/scan"/>
                                 <property name="locationMatch" value="scanReport"/>
                             </bean>
                         </list>
