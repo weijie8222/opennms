@@ -143,7 +143,7 @@
       </div>
       <div class="panel-body">
         <ul class="list-unstyled">
-            <li><a href="admin/ng-requisitions/index.jsp">Manage Provisioning Requisitions</a></li>
+            <li><a href="app.jsp#admin/requisitions">Manage Provisioning Requisitions</a></li>
             <li><a href="admin/asset/index.jsp">Import and Export Asset Information</a></li>
             <li><a href="admin/categories.htm">Manage Surveillance Categories</a></li>
             <li><a href="admin/discovery/edit-config.jsp">Configure Discovery</a></li>
@@ -219,7 +219,7 @@
       </div>
       <div class="panel-body">
         <ul class="list-unstyled">
-            <li><a href="locations/index.jsp">Manage Monitoring Locations</a></li>
+            <li><a href="app.jsp#admin/monitoringLocations">Manage Monitoring Locations</a></li>
             <li><a href="admin/applications.htm">Manage Applications</a></li>
             <li><a href="distributed/locationMonitorList.htm">Manage Remote Pollers</a></li>
             <li><a href="minion/index.jsp">Manage Minions</a></li>
