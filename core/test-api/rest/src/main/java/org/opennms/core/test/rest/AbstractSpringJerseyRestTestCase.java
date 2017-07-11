@@ -313,6 +313,10 @@ public abstract class AbstractSpringJerseyRestTestCase {
         return request;
     }
 
+    public MockHttpServletRequest createRequest(final String requestType, final String urlPath, final String username, final Collection<String> roles) {
+        return createRequest(servletContext, requestType, urlPath, Collections.emptyMap(), username, roles);
+    }
+
     protected static MockHttpServletRequest createRequest(final ServletContext context, final String requestType, final String urlPath, final String username, final Collection<String> roles) {
         return createRequest(context, requestType, urlPath, Collections.emptyMap(), username, roles);
     }
@@ -364,7 +368,7 @@ public abstract class AbstractSpringJerseyRestTestCase {
      * @param statusCode
      * @param expectedUrlSuffix
      */
-    protected MockHttpServletResponse sendPut(String url, String formData, int statusCode, final String expectedUrlSuffix) throws Exception {
+    public MockHttpServletResponse sendPut(String url, String formData, int statusCode, final String expectedUrlSuffix) throws Exception {
         LOG.debug("PUT {}, formData = {}, expected status code = {}, expected URL suffix = {}", url, formData, statusCode, expectedUrlSuffix);
         final MockHttpServletResponse response = sendData(PUT, MediaType.APPLICATION_FORM_URLENCODED, url, formData, statusCode);
         if (expectedUrlSuffix != null) {
@@ -381,7 +385,7 @@ public abstract class AbstractSpringJerseyRestTestCase {
      * @param data
      * @param statusCode
      */
-    protected MockHttpServletResponse sendData(String requestType, String contentType, String url, String data, int statusCode) throws Exception {
+    public MockHttpServletResponse sendData(String requestType, String contentType, String url, String data, int statusCode) throws Exception {
         MockHttpServletRequest request = createRequest(servletContext, requestType, url, getUser(), getUserRoles());
         request.setContentType(contentType);
 
@@ -423,7 +427,7 @@ public abstract class AbstractSpringJerseyRestTestCase {
         return string.toString();
     }
 
-    protected static Map<String, String> parseParamData(String data) throws UnsupportedEncodingException {
+    public static Map<String, String> parseParamData(String data) throws UnsupportedEncodingException {
         Map<String, String> retVal = new HashMap<String, String>();
         for (String item : data.split("&")) {
             int idx = item.indexOf("=");
@@ -446,7 +450,7 @@ public abstract class AbstractSpringJerseyRestTestCase {
         return sendRequest(request, expectedStatus, expectedUrlSuffix);
     }
 
-    protected static String getQueryString(final Map<?,?> parameters) {
+    public static String getQueryString(final Map<?,?> parameters) {
         final StringBuffer sb = new StringBuffer();
 
         try {
@@ -483,7 +487,7 @@ public abstract class AbstractSpringJerseyRestTestCase {
         return sendRequest(request, expectedStatus);
     }
 
-    protected String sendRequest(final MockHttpServletRequest request, int expectedStatus) throws Exception, UnsupportedEncodingException {
+    public String sendRequest(final MockHttpServletRequest request, int expectedStatus) throws Exception, UnsupportedEncodingException {
         return sendRequest(request, expectedStatus, null);
     }
 

@@ -28,13 +28,17 @@
 
 package org.opennms.web.rest.v2;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.opennms.web.svclayer.support.DefaultTroubleTicketProxy.createEventBuilder;
 
 import java.util.Date;
 
 import org.json.JSONObject;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opennms.core.test.MockLogAppender;
@@ -51,6 +55,7 @@ import org.opennms.netmgt.model.OnmsCategory;
 import org.opennms.netmgt.model.OnmsDistPoller;
 import org.opennms.netmgt.model.OnmsEvent;
 import org.opennms.netmgt.model.OnmsIpInterface;
+import org.opennms.netmgt.model.OnmsMemo;
 import org.opennms.netmgt.model.OnmsNode;
 import org.opennms.netmgt.model.OnmsNode.NodeType;
 import org.opennms.netmgt.model.OnmsServiceType;
@@ -94,6 +99,8 @@ public class AlarmRestServiceIT extends AbstractSpringJerseyRestTestCase {
 
     @Autowired
     private MockEventIpcManager m_eventMgr;
+
+    private AlarmRestV2Client alarmRestClient = new AlarmRestV2Client(this);
 
     private OnmsNode node1;
     private OnmsNode node2;
@@ -679,6 +686,73 @@ public class AlarmRestServiceIT extends AbstractSpringJerseyRestTestCase {
         anticipateEvent(createEventBuilder(EventConstants.TROUBLETICKET_CLOSE_UEI, alarm, null));
         sendPost(url + alarm.getId() + "/ticket/close", "", 202);
         verifyAnticipatedEvents();
+    }
+
+    @Test
+    public void canGetUpdateAndDeleteJournalAndStickyNotes() {
+        // Grab the first alarm we find in the database
+        OnmsAlarm expectedAlarm = m_databasePopulator.getAlarmDao().findAll().stream()
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No alarm found!"));
+        int alarmId = expectedAlarm.getId();
+
+        // It shouldn't have either a sticky or a journal associated
+        assertThat(expectedAlarm.getStickyMemo(), nullValue());
+        assertThat(expectedAlarm.getReductionKeyMemo(), nullValue());
+
+        // Now pull the corresponding alarm from the REST end-point
+        OnmsAlarm actualAlarm = alarmRestClient.getAlarm(alarmId);
+        assertThat(actualAlarm.getId(), equalTo(alarmId));
+
+        // Again, no sticky or journal
+        assertThat(actualAlarm.getStickyMemo(), nullValue());
+        assertThat(actualAlarm.getReductionKeyMemo(), nullValue());
+
+        // CREATE sticky and journal memos via the REST end-point
+        Date beforeCreate = new Date();
+        alarmRestClient.setOrUpdateSticky(alarmId, "some sticky");
+        alarmRestClient.setOrUpdateJournal(alarmId, "some journal");
+
+        // Pull the alarm again
+        actualAlarm = alarmRestClient.getAlarm(alarmId);
+
+        // Sticky and journal should both be present now
+        assertThat(actualAlarm.getStickyMemo(), notNullValue());
+        assertThat(actualAlarm.getReductionKeyMemo(), notNullValue());
+
+        // Verify the sticky and journal
+        verifyMemo(actualAlarm.getStickyMemo(), "some sticky", "admin", beforeCreate, beforeCreate);
+        verifyMemo(actualAlarm.getReductionKeyMemo(), "some journal", "admin", beforeCreate, beforeCreate);
+
+        // Now UPDATE the sticky and the journal
+        Date beforeUpdate = new Date();
+        alarmRestClient.setOrUpdateSticky(alarmId, "some modified sticky");
+        alarmRestClient.setOrUpdateJournal(alarmId, "some modified journal");
+
+        // Pull the alarm again
+        actualAlarm = alarmRestClient.getAlarm(alarmId);
+
+        // Verify the sticky and journal
+        verifyMemo(actualAlarm.getStickyMemo(), "some modified sticky", "admin", beforeCreate, beforeUpdate);
+        verifyMemo(actualAlarm.getReductionKeyMemo(), "some modified journal", "admin", beforeCreate, beforeUpdate);
+
+        // Now DELETE the sticky and the journal
+        alarmRestClient.deleteSticky(alarmId);
+        alarmRestClient.deleteJournal(alarmId);
+
+        // Pull the alarm once last time
+        actualAlarm = alarmRestClient.getAlarm(alarmId);
+
+        // No sticky or journal
+        assertThat(actualAlarm.getStickyMemo(), nullValue());
+        assertThat(actualAlarm.getReductionKeyMemo(), nullValue());
+    }
+
+    private void verifyMemo(OnmsMemo memo, String body, String author, Date created, Date updated) {
+        assertThat(memo.getBody(), equalTo(body));
+        assertThat(memo.getAuthor(), equalTo(author));
+        assertThat(memo.getCreated(), greaterThanOrEqualTo(created));
+        assertThat(memo.getUpdated(), greaterThanOrEqualTo(updated));
     }
 
     private void anticipateEvent(EventBuilder eventBuilder) {
