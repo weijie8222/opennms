@@ -59,6 +59,9 @@
     <!-- OpenNMS rest commons module -->
     <module>rest-commons</module>
 
+    <!-- OpenNMS rest provider module -->
+    <module>rest-provider</module>
+
     <!-- OpenNMS OSGI Core -->
     <module>opennms-osgi-core</module>
     <module>opennms-osgi-core-rest</module>
