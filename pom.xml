@@ -1339,6 +1339,7 @@
     <osgiVersion>6.0.0</osgiVersion>
     <osgiCompendiumVersion>5.0.0</osgiCompendiumVersion>
     <osgiEnterpriseVersion>5.0.0</osgiEnterpriseVersion>
+    <osgiJaxRsVersion>1.0.0-SNAPSHOT</osgiJaxRsVersion>
     <owaspEncoderVersion>1.2</owaspEncoderVersion>
     <quartzVersion>2.2.3</quartzVersion>
     <rateLimitedLoggerVersion>1.1.0</rateLimitedLoggerVersion>
