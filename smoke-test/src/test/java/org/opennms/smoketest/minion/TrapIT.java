@@ -49,13 +49,11 @@ import org.opennms.netmgt.model.OnmsEvent;
 import org.opennms.netmgt.snmp.SnmpObjId;
 import org.opennms.netmgt.snmp.SnmpTrapBuilder;
 import org.opennms.netmgt.snmp.SnmpUtils;
-import org.opennms.smoketest.NullTestEnvironment;
 import org.opennms.smoketest.OpenNMSSeleniumTestCase;
+import org.opennms.smoketest.TestEnvironmentSetup;
 import org.opennms.smoketest.utils.DaoUtils;
 import org.opennms.smoketest.utils.HibernateDaoFactory;
 import org.opennms.test.system.api.NewTestEnvironment.ContainerAlias;
-import org.opennms.test.system.api.TestEnvironment;
-import org.opennms.test.system.api.TestEnvironmentBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,27 +66,14 @@ import org.slf4j.LoggerFactory;
 public class TrapIT {
     private static final Logger LOG = LoggerFactory.getLogger(TrapIT.class);
 
-    private static TestEnvironment minionSystem;
-
     @ClassRule
-    public static final TestEnvironment getTestEnvironment() {
-        if (!OpenNMSSeleniumTestCase.isDockerEnabled()) {
-            return new NullTestEnvironment();
-        }
-        try {
-            final TestEnvironmentBuilder builder = TestEnvironment.builder().all();
-            builder.withOpenNMSEnvironment()
-            .addFile(AbstractSyslogTestCase.class.getResource("/eventconf.xml"), "etc/eventconf.xml")
-            .addFile(AbstractSyslogTestCase.class.getResource("/events/Cisco.syslog.events.xml"), "etc/events/Cisco.syslog.events.xml")
-            .addFile(AbstractSyslogTestCase.class.getResource("/syslogd-configuration.xml"), "etc/syslogd-configuration.xml")
-            .addFile(AbstractSyslogTestCase.class.getResource("/syslog/Cisco.syslog.xml"), "etc/syslog/Cisco.syslog.xml");
-            OpenNMSSeleniumTestCase.configureTestEnvironment(builder);
-            minionSystem = builder.build();
-            return minionSystem;
-        } catch (final Throwable t) {
-            throw new RuntimeException(t);
-        }
-    }
+    private static TestEnvironmentSetup minionSystem = TestEnvironmentSetup.MINIONS
+            .consume(builder ->
+                    builder.withOpenNMSEnvironment()
+                        .addFile(AbstractSyslogTestCase.class.getResource("/eventconf.xml"), "etc/eventconf.xml")
+                        .addFile(AbstractSyslogTestCase.class.getResource("/events/Cisco.syslog.events.xml"), "etc/events/Cisco.syslog.events.xml")
+                        .addFile(AbstractSyslogTestCase.class.getResource("/syslogd-configuration.xml"), "etc/syslogd-configuration.xml")
+                        .addFile(AbstractSyslogTestCase.class.getResource("/syslog/Cisco.syslog.xml"), "etc/syslog/Cisco.syslog.xml"));
 
     @Before
     public void checkForDocker() {

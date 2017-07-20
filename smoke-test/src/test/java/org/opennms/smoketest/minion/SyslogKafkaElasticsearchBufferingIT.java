@@ -38,7 +38,6 @@ import org.junit.Test;
 import org.opennms.core.criteria.CriteriaBuilder;
 import org.opennms.netmgt.dao.hibernate.MinionDaoHibernate;
 import org.opennms.netmgt.model.minion.OnmsMinion;
-import org.opennms.smoketest.OpenNMSSeleniumTestCase;
 import org.opennms.smoketest.utils.DaoUtils;
 import org.opennms.test.system.api.AbstractTestEnvironment;
 import org.opennms.test.system.api.NewTestEnvironment.ContainerAlias;
@@ -102,7 +101,6 @@ public class SyslogKafkaElasticsearchBufferingIT extends AbstractSyslogTestCase 
         builder.withMinionEnvironment()
             // Switch sink impl to Kafka using features.boot file
             .addFile(AbstractSyslogTestCase.class.getResource("/featuresBoot.d/kafka.boot"), "etc/featuresBoot.d/kafka.boot");
-        OpenNMSSeleniumTestCase.configureTestEnvironment(builder);
         return builder;
     }
 

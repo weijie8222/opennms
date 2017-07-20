@@ -39,11 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import com.google.common.collect.Iterables;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.http.client.ClientProtocolException;
-import org.junit.Assume;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.opennms.netmgt.model.OnmsMonitoredService;
@@ -52,42 +49,23 @@ import org.opennms.netmgt.model.PrimaryType;
 import org.opennms.netmgt.provision.persist.requisition.Requisition;
 import org.opennms.netmgt.provision.persist.requisition.RequisitionInterface;
 import org.opennms.netmgt.provision.persist.requisition.RequisitionNode;
-import org.opennms.smoketest.NullTestEnvironment;
-import org.opennms.smoketest.OpenNMSSeleniumTestCase;
+import org.opennms.smoketest.TestEnvironmentSetup;
 import org.opennms.smoketest.utils.RestClient;
+import org.opennms.test.system.api.NewTestEnvironment.ContainerAlias;
 import org.opennms.test.system.api.TestEnvironment;
-import org.opennms.test.system.api.TestEnvironmentBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.opennms.test.system.api.NewTestEnvironment.ContainerAlias;
+
+import com.google.common.collect.Iterables;
 
 public class DetectorsOnMinionIT {
 
     private static final Logger LOG = LoggerFactory.getLogger(DetectorsOnMinionIT.class);
 
-    private static TestEnvironment m_testEnvironment;
+    @ClassRule
+    private static TestEnvironment m_testEnvironment = TestEnvironmentSetup.MINIONS;
 
     private static final String LOCALHOST = "127.0.0.1";
-
-    @ClassRule
-    public static final TestEnvironment getTestEnvironment() {
-        if (!OpenNMSSeleniumTestCase.isDockerEnabled()) {
-            return new NullTestEnvironment();
-        }
-        try {
-            final TestEnvironmentBuilder builder = TestEnvironment.builder().all();
-            OpenNMSSeleniumTestCase.configureTestEnvironment(builder);
-            m_testEnvironment = builder.build();
-            return m_testEnvironment;
-        } catch (final Throwable t) {
-            throw new RuntimeException(t);
-        }
-    }
-
-    @Before
-    public void checkForDocker() {
-        Assume.assumeTrue(OpenNMSSeleniumTestCase.isDockerEnabled());
-    }
 
     @Test
     public void checkServicesDetectedOnMinion() throws ClientProtocolException, IOException, InterruptedException {

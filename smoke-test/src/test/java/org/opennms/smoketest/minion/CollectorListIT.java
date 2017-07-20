@@ -40,15 +40,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.junit.Assume;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.opennms.smoketest.NullTestEnvironment;
-import org.opennms.smoketest.OpenNMSSeleniumTestCase;
-import org.opennms.test.system.api.TestEnvironment;
-import org.opennms.test.system.api.TestEnvironmentBuilder;
+import org.opennms.smoketest.TestEnvironmentSetup;
 import org.opennms.test.system.api.NewTestEnvironment.ContainerAlias;
+import org.opennms.test.system.api.TestEnvironment;
 import org.opennms.test.system.api.utils.SshClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +58,8 @@ public class CollectorListIT {
 
     private static final Logger LOG = LoggerFactory.getLogger(CollectorListIT.class);
 
-    private static TestEnvironment m_testEnvironment;
+    @ClassRule
+    private static TestEnvironment m_testEnvironment = TestEnvironmentSetup.MINIONS;
 
     private ImmutableSet<String> commonCollectors = ImmutableSet.<String> builder().add(
             "org.opennms.netmgt.collectd.HttpCollector",
@@ -87,26 +84,6 @@ public class CollectorListIT {
             "org.opennms.netmgt.collectd.SnmpCollector")
             .addAll(commonCollectors)
             .build();
-
-    @ClassRule
-    public static final TestEnvironment getTestEnvironment() {
-        if (!OpenNMSSeleniumTestCase.isDockerEnabled()) {
-            return new NullTestEnvironment();
-        }
-        try {
-            final TestEnvironmentBuilder builder = TestEnvironment.builder().all();
-            OpenNMSSeleniumTestCase.configureTestEnvironment(builder);
-            m_testEnvironment = builder.build();
-            return m_testEnvironment;
-        } catch (final Throwable t) {
-            throw new RuntimeException(t);
-        }
-    }
-
-    @Before
-    public void checkForDocker() {
-        Assume.assumeTrue(OpenNMSSeleniumTestCase.isDockerEnabled());
-    }
 
     @Test
     public void canLoadCollectorsOnMinion() throws Exception {

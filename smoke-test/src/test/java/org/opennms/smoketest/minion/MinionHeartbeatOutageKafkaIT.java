@@ -27,9 +27,6 @@
  *******************************************************************************/
 package org.opennms.smoketest.minion;
 
-import org.junit.Ignore;
-
-import org.opennms.smoketest.OpenNMSSeleniumTestCase;
 import org.opennms.test.system.api.TestEnvironment;
 import org.opennms.test.system.api.TestEnvironmentBuilder;
 import org.slf4j.Logger;
@@ -58,7 +55,6 @@ public class MinionHeartbeatOutageKafkaIT extends MinionHeartbeatOutageIT {
         builder.withMinionEnvironment()
                 // Switch sink impl to Kafka using features.boot file
                 .addFile(MinionHeartbeatOutageKafkaIT.class.getResource("/featuresBoot.d/kafka.boot"), "etc/featuresBoot.d/kafka.boot");
-        OpenNMSSeleniumTestCase.configureTestEnvironment(builder);
         return builder;
     }
 

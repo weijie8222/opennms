@@ -47,31 +47,16 @@ import org.opennms.netmgt.dao.hibernate.MinionDaoHibernate;
 import org.opennms.netmgt.dao.hibernate.NodeDaoHibernate;
 import org.opennms.netmgt.model.OnmsNode;
 import org.opennms.netmgt.model.minion.OnmsMinion;
-import org.opennms.smoketest.NullTestEnvironment;
 import org.opennms.smoketest.OpenNMSSeleniumTestCase;
+import org.opennms.smoketest.TestEnvironmentSetup;
 import org.opennms.smoketest.utils.DaoUtils;
 import org.opennms.smoketest.utils.HibernateDaoFactory;
 import org.opennms.test.system.api.NewTestEnvironment.ContainerAlias;
 import org.opennms.test.system.api.TestEnvironment;
-import org.opennms.test.system.api.TestEnvironmentBuilder;
 
 public class MinionHeartBeatIT {
-	private static TestEnvironment m_testEnvironment;
-
 	@ClassRule
-	public static final TestEnvironment getTestEnvironment() {
-		if (!OpenNMSSeleniumTestCase.isDockerEnabled()) {
-			return new NullTestEnvironment();
-		}
-		try {
-			final TestEnvironmentBuilder builder = TestEnvironment.builder().all();
-			OpenNMSSeleniumTestCase.configureTestEnvironment(builder);
-			m_testEnvironment = builder.build();
-			return m_testEnvironment;
-		} catch (final Throwable t) {
-			throw new RuntimeException(t);
-		}
-	}
+	private static TestEnvironment m_testEnvironment = TestEnvironmentSetup.MINIONS;
 
     @Before
     public void checkForDocker() {

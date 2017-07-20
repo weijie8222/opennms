@@ -100,7 +100,6 @@ public class MinionHeartbeatOutageIT {
      */
     protected TestEnvironmentBuilder getEnvironmentBuilder() {
         final TestEnvironmentBuilder builder = TestEnvironment.builder().all();
-        OpenNMSSeleniumTestCase.configureTestEnvironment(builder);
         return builder;
     }
 

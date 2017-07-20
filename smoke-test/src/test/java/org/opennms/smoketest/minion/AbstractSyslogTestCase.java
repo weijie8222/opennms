@@ -54,8 +54,8 @@ import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
-import org.opennms.smoketest.NullTestEnvironment;
 import org.opennms.smoketest.OpenNMSSeleniumTestCase;
+import org.opennms.smoketest.TestEnvironmentSetup;
 import org.opennms.smoketest.utils.HibernateDaoFactory;
 import org.opennms.test.system.api.NewTestEnvironment.ContainerAlias;
 import org.opennms.test.system.api.TestEnvironment;
@@ -92,14 +92,8 @@ public abstract class AbstractSyslogTestCase {
     private static final AtomicInteger ORDINAL = new AtomicInteger();
 
     public final TestEnvironment getTestEnvironment() {
-        if (!OpenNMSSeleniumTestCase.isDockerEnabled()) {
-            return new NullTestEnvironment();
-        }
-        try {
-            return getEnvironmentBuilder().build();
-        } catch (final Throwable t) {
-            throw new RuntimeException(t);
-        }
+        return TestEnvironmentSetup.DEFAULTS
+                .withBuilder(getEnvironmentBuilder());
     }
 
     protected HibernateDaoFactory getDaoFactory() {
@@ -132,7 +126,6 @@ public abstract class AbstractSyslogTestCase {
         builder.withMinionEnvironment()
                 // Switch sink impl to Kafka using features.boot file
                 .addFile(AbstractSyslogTestCase.class.getResource("/featuresBoot.d/kafka.boot"), "etc/featuresBoot.d/kafka.boot");
-        OpenNMSSeleniumTestCase.configureTestEnvironment(builder);
         return builder;
     }
 

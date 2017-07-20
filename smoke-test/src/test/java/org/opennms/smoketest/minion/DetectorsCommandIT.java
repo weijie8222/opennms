@@ -41,15 +41,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.junit.Assume;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.opennms.smoketest.NullTestEnvironment;
-import org.opennms.smoketest.OpenNMSSeleniumTestCase;
+import org.opennms.smoketest.TestEnvironmentSetup;
 import org.opennms.test.system.api.NewTestEnvironment.ContainerAlias;
 import org.opennms.test.system.api.TestEnvironment;
-import org.opennms.test.system.api.TestEnvironmentBuilder;
 import org.opennms.test.system.api.utils.SshClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +65,8 @@ import com.google.common.collect.ImmutableMap;
  */
 public class DetectorsCommandIT {
 
-    private static TestEnvironment m_testEnvironment;
+    @ClassRule
+    private static TestEnvironment m_testEnvironment = TestEnvironmentSetup.MINIONS;
 
     private static final Logger LOG = LoggerFactory.getLogger(DetectorsCommandIT.class);
 
@@ -118,26 +115,6 @@ public class DetectorsCommandIT {
             .put("WMI", "org.opennms.netmgt.provision.detector.wmi.WmiDetector")
             .put("WS-Man", "org.opennms.netmgt.provision.detector.wsman.WsManDetector")
             .put("Win32Service", "org.opennms.netmgt.provision.detector.snmp.Win32ServiceDetector").build();
-
-    @ClassRule
-    public static final TestEnvironment getTestEnvironment() {
-        if (!OpenNMSSeleniumTestCase.isDockerEnabled()) {
-            return new NullTestEnvironment();
-        }
-        try {
-            final TestEnvironmentBuilder builder = TestEnvironment.builder().all();
-            OpenNMSSeleniumTestCase.configureTestEnvironment(builder);
-            m_testEnvironment = builder.build();
-            return m_testEnvironment;
-        } catch (final Throwable t) {
-            throw new RuntimeException(t);
-        }
-    }
-
-    @Before
-    public void checkForDocker() {
-        Assume.assumeTrue(OpenNMSSeleniumTestCase.isDockerEnabled());
-    }
 
     @Test
     public void canLoadDetectorsOnMinion() throws Exception {
