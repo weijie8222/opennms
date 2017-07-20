@@ -55,12 +55,13 @@ public class KSCEditorIT extends OpenNMSSeleniumTestCase {
     private String m_shareDir; // = "/home/ranger/git/opennms/target/opennms-SNAPSHOT/share";
     private final Path m_targetDir = Paths.get(m_shareDir, "rrd", "response", "127.0.0.1");
 
-    public static void configureTestEnvironment(final TestEnvironmentBuilder builder) {
-        OpenNMSSeleniumTestCase.configureTestEnvironment(builder);
-
-        builder.withOpenNMSEnvironment()
-        .addFiles(Paths.get("src/test/resources/ksc/"), "share/rrd/response/127.0.0.1/");
-    }
+    // TODO MVR figure out how to realize this...
+//    public static void configureTestEnvironment(final TestEnvironmentBuilder builder) {
+//        OpenNMSSeleniumTestCase.configureTestEnvironment(builder);
+//
+//        builder.withOpenNMSEnvironment()
+//        .addFiles(Paths.get("src/test/resources/ksc/"), "share/rrd/response/127.0.0.1/");
+//    }
 
     @Before
     public void setUp() throws Exception {
