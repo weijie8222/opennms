@@ -1088,14 +1088,8 @@ public class TopologyUI extends UI implements MenuUpdateListener, ContextMenuHan
     public void graphChanged(GraphContainer graphContainer) {
         // are there any vertices to display?
         boolean verticesAvailable = !graphContainer.getGraph().getDisplayVertices().isEmpty();
-        boolean collapsibleCriteriaInFocus = false;
+        boolean collapsibleCriteriaInFocus = hasCollapsibleCriteriaInFocus(graphContainer);
 
-        for (Criteria criteria : graphContainer.getCriteria()) {
-            if (criteria instanceof CollapsibleCriteria) {
-                collapsibleCriteriaInFocus = true;
-                break;
-            }
-        }
         // toggle view
         if (verticesAvailable || collapsibleCriteriaInFocus) {
             m_noContentWindow.setVisible(false);
@@ -1107,7 +1101,6 @@ public class TopologyUI extends UI implements MenuUpdateListener, ContextMenuHan
             if(!m_noContentWindow.isAttached()){
                 addWindow(m_noContentWindow);
             }
-
         }
 
         updateTabVisibility();
@@ -1116,6 +1109,15 @@ public class TopologyUI extends UI implements MenuUpdateListener, ContextMenuHan
         if (m_currentHudDisplay != null) {
             m_currentHudDisplay.setVertexFocusCount(getFocusVertices(m_graphContainer));
         }
+    }
+
+    private boolean hasCollapsibleCriteriaInFocus(GraphContainer graphContainer) {
+        for (Criteria criteria : graphContainer.getCriteria()) {
+            if (criteria instanceof CollapsibleCriteria) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private int getFocusVertices(GraphContainer graphContainer) {
