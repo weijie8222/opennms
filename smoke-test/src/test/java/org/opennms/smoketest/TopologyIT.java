@@ -134,6 +134,26 @@ public class TopologyIT extends OpenNMSSeleniumTestCase {
             }
         }
 
+        public void expand() throws org.openqa.selenium.NoSuchElementException {
+            try {
+                ui.testCase.setImplicitWait(1, TimeUnit.SECONDS);
+                getElement().findElement(By.xpath("//a[@class='gwt-Anchor icon-plus']")).click();
+                waitForTransition();
+            } finally {
+                ui.testCase.setImplicitWait();
+            }
+        }
+
+        public void collapse() throws org.openqa.selenium.NoSuchElementException {
+            try {
+                ui.testCase.setImplicitWait(1, TimeUnit.SECONDS);
+                getElement().findElement(By.xpath("//a[@class='gwt-Anchor icon-minus']")).click();
+                waitForTransition();
+            } finally {
+                ui.testCase.setImplicitWait();
+            }
+        }
+
         private WebElement getElement() {
             return ui.testCase.findElementByXpath("//*/table[@class='search-token-field']"
                     + "//div[@class='search-token-label' and contains(text(),'" + label + "')]");
@@ -428,6 +448,7 @@ public class TopologyIT extends OpenNMSSeleniumTestCase {
                 clickOnMenuItemsWithLabels("View", "Automatic Refresh");
             } else {
                 LOG.info("setAutomaticRefresh: refresh is already {}", enabled ? "enabled" : "disabled");
+                resetMenu(); // ensure menu is reset, otherwise test may fail
             }
             return this;
         }
@@ -884,14 +905,20 @@ public class TopologyIT extends OpenNMSSeleniumTestCase {
      *     Temporary solution which only works if the category name is unused
      * </p>
      */
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void verifyCollapsibleCriteriaNoDefaultFocusWindow() throws IOException, InterruptedException {
         topologyUiPage.clearFocus();
+        Assert.assertThat(topologyUiPage.getNoFocusDefinedWindow().isVisible(), is(true));
 
-        String categoryName = "Switches";
+        topologyUiPage.searchAndSelect("Servers");
+        Assert.assertThat(topologyUiPage.getFocusedVertices(), hasSize(1));
+        Assert.assertThat(topologyUiPage.getVisibleVertices(), hasSize(0));
+        Assert.assertThat(topologyUiPage.getNoFocusDefinedWindow().isVisible(), is(false));
 
-        topologyUiPage.search(categoryName).selectItemThatContains(categoryName);
-        topologyUiPage.testCase.findElementByXpath("//*[contains(text(), 'No focus defined')]");
+        topologyUiPage.getFocusedVertices().get(0).collapse();
+        Assert.assertThat(topologyUiPage.getFocusedVertices(), hasSize(1));
+        Assert.assertThat(topologyUiPage.getVisibleVertices(), hasSize(1));
+        Assert.assertThat(topologyUiPage.getNoFocusDefinedWindow().isVisible(), is(false));
     }
 
     /**
