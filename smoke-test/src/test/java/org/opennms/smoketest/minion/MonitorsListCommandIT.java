@@ -56,7 +56,7 @@ public class MonitorsListCommandIT {
     private static final Logger LOG = LoggerFactory.getLogger(MonitorsListCommandIT.class);
 
     @ClassRule
-    private static TestEnvironment m_testEnvironment = TestEnvironmentSetup.MINIONS;
+    public static TestEnvironment m_testEnvironment = TestEnvironmentSetup.MINIONS;
 
     private ImmutableSet<String> expectedMonitors = ImmutableSet.<String> builder().add(
             "org.opennms.netmgt.poller.monitors.DNSResolutionMonitor",

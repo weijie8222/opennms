@@ -67,7 +67,7 @@ public class TrapIT {
     private static final Logger LOG = LoggerFactory.getLogger(TrapIT.class);
 
     @ClassRule
-    private static TestEnvironmentSetup minionSystem = TestEnvironmentSetup.MINIONS
+    public static TestEnvironmentSetup minionSystem = TestEnvironmentSetup.MINIONS
             .consume(builder ->
                     builder.withOpenNMSEnvironment()
                         .addFile(AbstractSyslogTestCase.class.getResource("/eventconf.xml"), "etc/eventconf.xml")

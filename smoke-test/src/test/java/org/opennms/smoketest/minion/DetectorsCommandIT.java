@@ -66,7 +66,7 @@ import com.google.common.collect.ImmutableMap;
 public class DetectorsCommandIT {
 
     @ClassRule
-    private static TestEnvironment m_testEnvironment = TestEnvironmentSetup.MINIONS;
+    public static TestEnvironment m_testEnvironment = TestEnvironmentSetup.MINIONS;
 
     private static final Logger LOG = LoggerFactory.getLogger(DetectorsCommandIT.class);
 

@@ -56,7 +56,7 @@ import org.opennms.test.system.api.TestEnvironment;
 
 public class MinionHeartBeatIT {
 	@ClassRule
-	private static TestEnvironment m_testEnvironment = TestEnvironmentSetup.MINIONS;
+	public static TestEnvironment m_testEnvironment = TestEnvironmentSetup.MINIONS;
 
     @Before
     public void checkForDocker() {

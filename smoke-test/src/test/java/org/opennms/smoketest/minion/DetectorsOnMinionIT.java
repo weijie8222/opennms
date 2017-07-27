@@ -63,7 +63,7 @@ public class DetectorsOnMinionIT {
     private static final Logger LOG = LoggerFactory.getLogger(DetectorsOnMinionIT.class);
 
     @ClassRule
-    private static TestEnvironment m_testEnvironment = TestEnvironmentSetup.MINIONS;
+    public static TestEnvironment m_testEnvironment = TestEnvironmentSetup.MINIONS;
 
     private static final String LOCALHOST = "127.0.0.1";
 

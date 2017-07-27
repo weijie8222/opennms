@@ -82,7 +82,8 @@ public abstract class AbstractSyslogTestCase {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractSyslogTestCase.class);
 
     @Rule
-    public TestEnvironment testEnvironment = getTestEnvironment();
+    public TestEnvironment testEnvironment = TestEnvironmentSetup.MINIONS
+            .withBuilder(getEnvironmentBuilder());
 
     @Rule
     public Timeout timeout = new Timeout(20, TimeUnit.MINUTES);
@@ -90,11 +91,6 @@ public abstract class AbstractSyslogTestCase {
     private HibernateDaoFactory m_daoFactory;
 
     private static final AtomicInteger ORDINAL = new AtomicInteger();
-
-    public final TestEnvironment getTestEnvironment() {
-        return TestEnvironmentSetup.DEFAULTS
-                .withBuilder(getEnvironmentBuilder());
-    }
 
     protected HibernateDaoFactory getDaoFactory() {
         if (m_daoFactory == null) {

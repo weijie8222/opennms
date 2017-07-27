@@ -59,7 +59,7 @@ public class CollectorListIT {
     private static final Logger LOG = LoggerFactory.getLogger(CollectorListIT.class);
 
     @ClassRule
-    private static TestEnvironment m_testEnvironment = TestEnvironmentSetup.MINIONS;
+    public static TestEnvironment m_testEnvironment = TestEnvironmentSetup.MINIONS;
 
     private ImmutableSet<String> commonCollectors = ImmutableSet.<String> builder().add(
             "org.opennms.netmgt.collectd.HttpCollector",

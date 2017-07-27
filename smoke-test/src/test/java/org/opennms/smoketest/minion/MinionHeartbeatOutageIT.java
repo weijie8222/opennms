@@ -39,7 +39,6 @@ import java.net.InetSocketAddress;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -53,8 +52,7 @@ import org.opennms.netmgt.model.OnmsEvent;
 import org.opennms.netmgt.model.OnmsMonitoringSystem;
 import org.opennms.netmgt.model.OnmsNode;
 import org.opennms.netmgt.model.minion.OnmsMinion;
-import org.opennms.smoketest.NullTestEnvironment;
-import org.opennms.smoketest.OpenNMSSeleniumTestCase;
+import org.opennms.smoketest.TestEnvironmentSetup;
 import org.opennms.smoketest.utils.DaoUtils;
 import org.opennms.smoketest.utils.HibernateDaoFactory;
 import org.opennms.test.system.api.AbstractTestEnvironment;
@@ -76,23 +74,21 @@ import com.spotify.docker.client.exceptions.DockerException;
  * @author Seth
  */
 public class MinionHeartbeatOutageIT {
+
     @Rule
-    public TestEnvironment testEnvironment = getTestEnvironment();
+    public TestEnvironmentSetup testEnvironmentSetup = TestEnvironmentSetup.MINIONS
+            .withBuilder(getEnvironmentBuilder());
 
     @Rule
     public Timeout timeout = new Timeout(20, TimeUnit.MINUTES);
 
+    private TestEnvironment testEnvironment;
+
     private HibernateDaoFactory m_daoFactory;
 
-    public final TestEnvironment getTestEnvironment() {
-        if (!OpenNMSSeleniumTestCase.isDockerEnabled()) {
-            return new NullTestEnvironment();
-        }
-        try {
-            return getEnvironmentBuilder().build();
-        } catch (final Throwable t) {
-            throw new RuntimeException(t);
-        }
+    @Before
+    public void setUp() {
+        this.testEnvironment = testEnvironmentSetup.getTestEnvironment();
     }
 
     /**
@@ -101,11 +97,6 @@ public class MinionHeartbeatOutageIT {
     protected TestEnvironmentBuilder getEnvironmentBuilder() {
         final TestEnvironmentBuilder builder = TestEnvironment.builder().all();
         return builder;
-    }
-
-    @Before
-    public void checkForDocker() {
-        Assume.assumeTrue(OpenNMSSeleniumTestCase.isDockerEnabled());
     }
 
     protected HibernateDaoFactory getDaoFactory() {
@@ -120,9 +111,6 @@ public class MinionHeartbeatOutageIT {
     /**
      * Install the Kafka features on Minion.
      * 
-     * @param minionSshAddr
-     * @param kafkaAddress
-     * @throws Exception
      */
     protected static void installFeaturesOnMinion(InetSocketAddress minionSshAddr) throws Exception {
         try (final SshClient sshClient = new SshClient(minionSshAddr, "admin", "admin")) {
