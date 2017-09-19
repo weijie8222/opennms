@@ -36,15 +36,10 @@ import org.opennms.netmgt.collection.streaming.api.Listener;
 import org.opennms.netmgt.collection.streaming.api.TelemetryProtocol;
 import org.opennms.netmgt.collection.streaming.ipc.TelemetrySinkModule;
 import org.opennms.netmgt.collection.streaming.model.TelemetryMessage;
-import org.opennms.netmgt.collection.streaming.udp.UdpListener;
 import org.opennms.netmgt.dao.api.DistPollerDao;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
-import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanWrapper;
@@ -52,12 +47,9 @@ import org.springframework.beans.PropertyAccessorFactory;
 
 import java.lang.reflect.Constructor;
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 /**
