@@ -53,7 +53,6 @@ import org.opennms.netmgt.alarmd.northbounder.snmptrap.SnmpTrapNorthbounderConfi
 import org.opennms.netmgt.alarmd.northbounder.syslog.SyslogNorthbounderConfig;
 import org.opennms.netmgt.alarmd.northbounder.bsf.BSFNorthbounderConfig;
 import org.opennms.netmgt.alarmd.northbounder.drools.DroolsNorthbounderConfig;
-import org.opennms.netmgt.collection.streaming.config.TelemetrydConfiguration;
 import org.opennms.netmgt.config.ackd.AckdConfiguration;
 import org.opennms.netmgt.config.actiond.ActiondConfiguration;
 import org.opennms.netmgt.config.ami.AmiConfig;
@@ -118,6 +117,7 @@ import org.opennms.netmgt.config.wmi.agent.WmiConfig;
 import org.opennms.netmgt.config.wsman.WsmanConfig;
 import org.opennms.netmgt.config.wsman.WsmanDatacollectionConfig;
 import org.opennms.netmgt.provision.persist.requisition.Requisition;
+import org.opennms.netmgt.telemetry.config.model.TelemetrydConfiguration;
 import org.opennms.netmgt.xml.eventconf.Events;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;

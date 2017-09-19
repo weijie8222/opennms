@@ -753,8 +753,8 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.opennms.features.collection.streaming</groupId>
-      <artifactId>org.opennms.features.collection.streaming.minion</artifactId>
+      <groupId>org.opennms.features.telemetry</groupId>
+      <artifactId>org.opennms.features.telemetry.minion</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
       <scope>provided</scope>

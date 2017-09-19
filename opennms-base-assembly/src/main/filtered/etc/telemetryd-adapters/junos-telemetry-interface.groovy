@@ -2,8 +2,8 @@ import groovy.util.logging.Slf4j
 import org.opennms.core.utils.RrdLabelUtils
 import org.opennms.netmgt.collection.api.AttributeType
 import org.opennms.netmgt.collection.api.CollectionAgent
-import org.opennms.netmgt.collection.streaming.jti.proto.Port
-import org.opennms.netmgt.collection.streaming.jti.proto.TelemetryTop
+import org.opennms.netmgt.telemetry.adapters.jti.proto.Port
+import org.opennms.netmgt.telemetry.adapters.jti.proto.TelemetryTop
 import org.opennms.netmgt.collection.support.builder.CollectionSetBuilder
 import org.opennms.netmgt.collection.support.builder.InterfaceLevelResource
 import org.opennms.netmgt.collection.support.builder.NodeLevelResource

@@ -16,7 +16,6 @@
     <module>collectors</module>
     <module>persistence-rrd</module>
     <module>persistence-tcp</module>
-    <module>streaming</module>
     <module>shell-commands</module>
     <module>test-api</module>
   </modules>

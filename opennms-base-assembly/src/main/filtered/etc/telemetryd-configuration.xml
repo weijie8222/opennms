@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <telemetryd-config>
-  <protocol name="JTI" description="Junos Telemetry Interface (JTI)">
-    <listener name="JTI-UDP-50000" class-name="org.opennms.netmgt.collection.streaming.udp.UdpListener">
+  <protocol name="JTI" description="Junos Telemetry Interface (JTI)" enabled="false">
+    <listener name="JTI-UDP-50000" class-name="org.opennms.netmgt.telemetry.listeners.udp.UdpListener">
       <parameter key="port" value="50000"/>
     </listener>
 
-    <adapter name="JTI-GPB" class-name="org.opennms.netmgt.collection.streaming.jti.JtiGpbAdapter">
+    <adapter name="JTI-GPB" class-name="org.opennms.netmgt.telemetry.adapters.jti.JtiGpbAdapter">
       <parameter key="script" value="${install.dir}/etc/telemetryd-adapters/junos-telemetry-interface.groovy" />
     </adapter>
 
