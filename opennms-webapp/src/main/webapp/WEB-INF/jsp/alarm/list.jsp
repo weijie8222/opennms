@@ -274,7 +274,7 @@
     }
 
     function changeFavorite(favoriteId, filter) {
-        window.location.href = "<%=req.getContextPath()%>/alarm/list?display=<%=parms.getDisplay()%>&favoriteId=" + favoriteId + '&' + filter;
+        window.location.href = "<%=req.getContextPath()%>/${alarmListLink}&favoriteId=" + favoriteId + '&' + filter;
     }
     
     // function to play sound
