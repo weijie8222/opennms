@@ -15,29 +15,51 @@ The framework does not make any assumption about the data about being received o
 Listeners may run on either _{opennms-product-name}_ or _Minion_, whereas adapters run exclusively on _{opennms-product-name}_.
 If a listener is running on _Minion_, the received messages will be automatically dispatched to the associated adapter(s) running in _{opennms-product-name}_.
 
-=== Daemon
+=== Supported protocols
 
-The daemon's configuration and protocol definitions are configured in `${OPENNMS_HOME}/etc/telemetryd-configuration.xml`.
+We provide built-in support for a number of protocols.
+Follow the instructions bellow for enabling these.
 
-After making a change in the configuration file, you can apply the changes without restarting by sending a `reloadDaemonConfig` event:
+==== Junos Telemetry Interface (JTI)
+
+To enable support for Junos Telemetry Interface (JTI), edit `${OPENNMS_HOME}/etc/telemetryd-configuration.xml` and change the following line:
+
+```
+<protocol name="JTI" description="Junos Telemetry Interface (JTI)" enabled="false">
+```
+
+to:
+
+```
+<protocol name="JTI" description="Junos Telemetry Interface (JTI)">
+```
+
+Apply the changes without restarting by sending a `reloadDaemonConfig` event:
 
 ```
 ${OPENNMS_HOME}bin/send-event.pl -p 'daemonName Telemetryd' uei.opennms.org/internal/reloadDaemonConfig
 ```
 
-=== Minion
+By default, this will open a UDP socket bound to `0.0.0.0:50000` to which JTI messages can be forwarded.
 
-In order to enable a lister on Minion, you can run
+==== Minion
 
-```
-config:edit org.opennms.features.telemetry.listeners-udp-50001
-config:property-set name JTI
-config:property-set class-name org.opennms.netmgt.telemetry.listeners.udp.UdpListener
-config:property-set listener.port 50001
-config:update
-```
+To enable the listener on Minion:
 
-=== Listeners
+[source]
+----
+$ ssh -p 8201 admin@localhost
+...
+admin@minion()> config:edit org.opennms.features.telemetry.listeners-udp-50000
+admin@minion()> config:property-set name JTI
+admin@minion()> config:property-set class-name org.opennms.netmgt.telemetry.listeners.udp.UdpListener
+admin@minion()> config:property-set listener.port 50000
+admin@minion()> config:update
+----
+
+NOTE: The protocol must also be enabled on _{opennms-product-name}_ for the messages to be processed.
+
+=== Listener Reference
 
 ==== UDP Listener
 
@@ -62,7 +84,7 @@ The UDP listener can be used to open a simple UDP socket and build messages from
 | `maxPacketSize`  | Maximum packet size in bytes (anything greater will be truncated) | optional | `8096`
 |===
 
-=== Adapters
+=== Adapter Reference
 
 ==== JTI Adapter
 
@@ -87,3 +109,16 @@ Using the script extension you can extract the desired metrics from the JTI mess
 |===
 
 ===== Scripting
+
+The script will be invoked for every JTI message that is received and succesfully decoded.
+
+The following globals will be passed to the script:
+
+.Globals passed to the script
+[options="header, autowidth"]
+|===
+| Parameter  | Description                                                    | Type
+| `agent`    | The agent (node) against which the metrics will be associated  | `org.opennms.netmgt.collection.api.CollectionAgent`
+| `builder`  | Builder in which the resources and metrics should be added     | `org.opennms.netmgt.collection.support.builder.CollectionSetBuilder`
+| `msg`      | Decoded JTI message from which the metrics should be extracted | `org.opennms.netmgt.telemetry.adapters.jti.proto.TelemetryTop`
+|===
