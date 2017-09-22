@@ -30,7 +30,7 @@ ${OPENNMS_HOME}bin/send-event.pl -p 'daemonName Telemetryd' uei.opennms.org/inte
 In order to enable a lister on Minion, you can run
 
 ```
-config:edit org.opennms.netmgt.telemetry.minion.listenermanager.udp5001
+config:edit org.opennms.features.telemetry.listeners-udp-50001
 config:property-set name JTI
 config:property-set class-name org.opennms.netmgt.telemetry.listeners.udp.UdpListener
 config:property-set listener.port 50001

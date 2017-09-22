@@ -24,4 +24,5 @@
             <entry key="service.pid" value="org.opennms.features.telemetry.listeners"/>
         </service-properties>
     </service>
+
 </blueprint>

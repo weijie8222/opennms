@@ -51,7 +51,7 @@ public class MapBasedListenerDef implements ListenerDefinition {
 
     @Override
     public String getClassName() {
-        return name;
+        return className;
     }
 
     @Override

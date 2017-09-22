@@ -61,7 +61,7 @@ public class ListenerManager implements ManagedServiceFactory {
     }
 
     @Override
-    public void updated(String pid, Dictionary properties) {
+    public void updated(String pid, Dictionary<String, ?> properties) {
         final Listener existingListener = listenersByPid.get(pid);
         if (existingListener != null) {
             LOG.info("Updating existing listener/dispatcher for pid: {}", pid);
@@ -94,6 +94,8 @@ public class ListenerManager implements ManagedServiceFactory {
                 LOG.error("Failed to close dispatcher.", e);
             }
         }
+
+        LOG.info("Successfully started listener/dispatcher for pid: {}", pid);
     }
 
     @Override
