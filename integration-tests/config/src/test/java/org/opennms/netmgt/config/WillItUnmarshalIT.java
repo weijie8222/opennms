@@ -1,8 +1,8 @@
 /*******************************************************************************
  * This file is part of OpenNMS(R).
  *
- * Copyright (C) 2007-2014 The OpenNMS Group, Inc.
- * OpenNMS(R) is Copyright (C) 1999-2014 The OpenNMS Group, Inc.
+ * Copyright (C) 2007-2017 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2017 The OpenNMS Group, Inc.
  *
  * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
  *
@@ -30,29 +30,39 @@ package org.opennms.netmgt.config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 import static org.opennms.core.test.ConfigurationTestUtils.getDaemonEtcDirectory;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.custommonkey.xmlunit.Difference;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.opennms.core.test.ConfigurationTestUtils;
+import org.opennms.core.test.xml.XmlTest;
 import org.opennms.core.xml.JaxbUtils;
 import org.opennms.features.ifttt.config.IfTttConfig;
 import org.opennms.features.reporting.model.basicreport.LegacyLocalReportsDefinition;
 import org.opennms.features.reporting.model.jasperreport.LocalJasperReports;
 import org.opennms.features.reporting.model.remoterepository.RemoteRepositoryConfig;
+import org.opennms.netmgt.alarmd.northbounder.bsf.BSFNorthbounderConfig;
+import org.opennms.netmgt.alarmd.northbounder.drools.DroolsNorthbounderConfig;
 import org.opennms.netmgt.alarmd.northbounder.email.EmailNorthbounderConfig;
 import org.opennms.netmgt.alarmd.northbounder.jms.JmsNorthbounderConfig;
 import org.opennms.netmgt.alarmd.northbounder.snmptrap.SnmpTrapNorthbounderConfig;
 import org.opennms.netmgt.alarmd.northbounder.syslog.SyslogNorthbounderConfig;
-import org.opennms.netmgt.alarmd.northbounder.bsf.BSFNorthbounderConfig;
-import org.opennms.netmgt.alarmd.northbounder.drools.DroolsNorthbounderConfig;
 import org.opennms.netmgt.config.ackd.AckdConfiguration;
 import org.opennms.netmgt.config.actiond.ActiondConfiguration;
 import org.opennms.netmgt.config.ami.AmiConfig;
@@ -144,6 +154,8 @@ import junit.framework.AssertionFailedError;
 @RunWith(value = Parameterized.class)
 public class WillItUnmarshalIT {
 
+    private static final Pattern COMMENT_START_PATTERN = Pattern.compile("\\s*[\\r\\n]*\\s*<!--", Pattern.DOTALL | Pattern.MULTILINE);
+
     /**
      * Possible implementations for resource loading.
      */
@@ -155,35 +167,33 @@ public class WillItUnmarshalIT {
     }
 
     /**
-     * Possible implementation used for unmarshalling.
-     */
-    public static enum Impl {
-        JAXB
-    }
-
-    /**
      * A list of test parameters to execute.
      * 
      * See {@link #files()} for detailed information.
      */
     public static final ArrayList<Object[]> FILES = new ArrayList<>();
 
-    private static void addFile(final Source source, final String file, final Class<?> clazz, final Impl impl, final boolean lenient, final String exceptionMessage) {
-        FILES.add(new Object[] {source, file, clazz, impl, lenient, exceptionMessage});
+    @BeforeClass
+    public static void setUp() {
+        XMLUnit.setIgnoreWhitespace(false);
+        XMLUnit.setIgnoreAttributeOrder(false);
+        XMLUnit.setIgnoreComments(true);
+        XMLUnit.setIgnoreDiffBetweenTextAndCDATA(false);
+        XMLUnit.setNormalize(false);
     }
 
-    private static void addFile(final Source source, final String file, final Class<?> clazz, final Impl impl, final String exceptionMessage) {
-        addFile(source, file, clazz, impl, false, exceptionMessage);
+    /**
+     * Add a file to the list of XML files to test.
+     * @param source The {@link Source} type
+     * @param file the file to unmarshal
+     * @param clazz the class it unmarshals to
+     * @param checkFormat
+     * @param exceptionMessage
+     */
+    private static void addFile(final Source source, final String file, final Class<?> clazz, boolean checkFormat, final String exceptionMessage) {
+        FILES.add(new Object[] {source, file, clazz, checkFormat, exceptionMessage});
     }
 
-    private static void addFile(final Source source, final String file, final Class<?> clazz, final Impl impl, final boolean lenient) {
-        addFile(source, file, clazz, impl, lenient, null);
-    }
-
-    private static void addFile(final Source source, final String file, final Class<?> clazz, final Impl impl) {
-        addFile(source, file, clazz, impl, false, null);
-    }
-    
     static {
         addFile(Source.SPRING, "eventconf-good-ordering.xml", Events.class, Impl.JAXB);
         addFile(Source.SPRING, "eventconf-bad-ordering.xml", Events.class, Impl.JAXB, true);
@@ -304,51 +314,36 @@ public class WillItUnmarshalIT {
         for (final File file : FileUtils.listFiles(new File(getDaemonEtcDirectory(), "events"),
                                                    new String[] { "xml" },
                                                    true)) {
-            addFile(Source.ABSOLUTE,
-                    file.getPath(),
-                    Events.class,
-                    Impl.JAXB);
+            addFile(Source.ABSOLUTE, file.getPath(), Events.class, false, null);
         }
 
         // Add all datacollection group files
         for (final File file : FileUtils.listFiles(new File(getDaemonEtcDirectory(), "datacollection"),
                                                    new String[] { "xml" },
                                                    true)) {
-            addFile(Source.ABSOLUTE,
-                    file.getPath(),
-                    DatacollectionGroup.class,
-                    Impl.JAXB);
+            addFile(Source.ABSOLUTE, file.getPath(), DatacollectionGroup.class, false, null);
         }
 
         // Add all wsman-datacollection configuration files
-        addFile(Source.CONFIG, "wsman-datacollection-config.xml", WsmanDatacollectionConfig.class, Impl.JAXB);
+        addFile(Source.CONFIG, "wsman-datacollection-config.xml", WsmanDatacollectionConfig.class, false, null);
         for (final File file : FileUtils.listFiles(new File(getDaemonEtcDirectory(), "wsman-datacollection.d"),
                                                    new String[] { "xml" },
                                                    true)) {
-            addFile(Source.ABSOLUTE,
-                    file.getPath(),
-                    WsmanDatacollectionConfig.class,
-                    Impl.JAXB);
+            addFile(Source.ABSOLUTE, file.getPath(), WsmanDatacollectionConfig.class, false, null);
         }
 
         // Add all resource-types configuration files
         for (final File file : FileUtils.listFiles(new File(getDaemonEtcDirectory(), "resource-types.d"),
                                                    new String[] { "xml" },
                                                    true)) {
-            addFile(Source.ABSOLUTE,
-                    file.getPath(),
-                    ResourceTypes.class,
-                    Impl.JAXB);
+            addFile(Source.ABSOLUTE, file.getPath(), ResourceTypes.class, false, null);
         }
 
         // Add all jmx-datacollection configuration files
         for (final File file : FileUtils.listFiles(new File(getDaemonEtcDirectory(), "jmx-datacollection-config.d"),
                                                    new String[] { "xml" },
                                                    true)) {
-            addFile(Source.ABSOLUTE,
-                    file.getPath(),
-                    JmxDatacollectionConfig.class,
-                    Impl.JAXB);
+            addFile(Source.ABSOLUTE, file.getPath(), JmxDatacollectionConfig.class, false, null);
         }
     }
 
@@ -361,8 +356,7 @@ public class WillItUnmarshalIT {
      *   <li>The source to load the resource from</li>
      *   <li>The file to test</li>
      *   <li>The class used for unmarshaling</li>
-     *   <li>The implementation to use for unmarshalling</li>
-     *   <li>Flag for being lenient</li>
+     *   <li>Whether to check if the file is in JAXB's default marshal format</li>
      *   <li>An expected exception message</li>
      * </ul>
      * 
@@ -379,49 +373,38 @@ public class WillItUnmarshalIT {
     private final Source source;
     private final String file;
     private final Class<?> clazz;
-    private final Impl impl;
+    private final boolean checkFormat;
     private final String exception;
 
     public WillItUnmarshalIT(final Source source,
             final String file,
             final Class<?> clazz,
-            final Impl impl,
-            final boolean lenient,
+            final boolean checkFormat,
             final String exception) {
         this.source = source;
         this.file = file;
         this.clazz = clazz;
-        this.impl = impl;
+        this.checkFormat = checkFormat;
         this.exception = exception;
     }
 
     @Test
     public void testUnmarshalling() {
-        // Be conservative about what we ship, so don't be lenient
         final Resource resource = this.createResource();
-
-        // Assert that resource is valied
         assertNotNull("Resource must not be null", resource);
 
         // Unmarshall the config file
         Object result = null;
         try {
-            switch (impl) {
-            case JAXB:
-                result = JaxbUtils.unmarshal(this.clazz, resource);
-                break;
-
-            default:
-                fail("Implementation unknown: " + this.impl);
-            }
+            result = JaxbUtils.unmarshal(this.clazz, resource);
 
             // Assert that unmarshalling returned a valid result
             assertNotNull("Unmarshalled instance must not be null", result);
 
-        } catch(AssertionFailedError ex) {
+        } catch (final AssertionFailedError ex) {
             throw ex;
 
-        } catch(Exception ex) {
+        } catch (final Exception ex) {
             // If we have an expected exception, the returned exception muss
             // match - if not the test failed
             if (this.exception != null) {
@@ -430,6 +413,42 @@ public class WillItUnmarshalIT {
             } else {
                 throw new RuntimeException(ex);
             }
+        }
+    }
+
+    @Test
+    public void testJaxbFormat() {
+        if (!checkFormat) {
+            return;
+        }
+        final Resource resource = this.createResource();
+        assertNotNull("Resource must not be null", resource);
+        try {
+            String onDisk = readResource(resource);
+            Object result = JaxbUtils.unmarshal(this.clazz, resource);
+            final Pattern p = COMMENT_START_PATTERN;
+            final Matcher m = p.matcher(onDisk);
+            onDisk = m.replaceAll("<!--");
+            final String marshalled = JaxbUtils.marshal(result);
+            final List<Difference> diffs = XmlTest.getDifferencesSimple(onDisk, marshalled);
+            if (diffs.size() != 0) {
+                System.err.println("----------------------------------------------------------------------");
+                System.err.println(resource.getFilename() + " on disk:");
+                System.err.println(onDisk);
+                System.err.println(resource.getFilename() + " marshalled:");
+                System.err.println(marshalled);
+                throw new AssertionFailedError(resource.getFilename() + ": " + diffs);
+            }
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static final String readResource(final Resource resource) {
+        try (final InputStream is = resource.getInputStream(); final InputStreamReader isr = new InputStreamReader(is)) {
+            return IOUtils.toString(isr);
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
