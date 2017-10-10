@@ -1,3 +1,31 @@
+/*******************************************************************************
+ * This file is part of OpenNMS(R).
+ *
+ * Copyright (C) 2016-2017 The OpenNMS Group, Inc.
+ * OpenNMS(R) is Copyright (C) 1999-2017 The OpenNMS Group, Inc.
+ *
+ * OpenNMS(R) is a registered trademark of The OpenNMS Group, Inc.
+ *
+ * OpenNMS(R) is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ *
+ * OpenNMS(R) is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with OpenNMS(R).  If not, see:
+ *      http://www.gnu.org/licenses/
+ *
+ * For more information contact:
+ *     OpenNMS(R) Licensing <license@opennms.org>
+ *     http://www.opennms.org/
+ *     http://www.opennms.com/
+ *******************************************************************************/
+
 package org.opennms.smoketest.minion;
 
 import static com.jayway.awaitility.Awaitility.await;
@@ -54,11 +82,21 @@ import org.opennms.smoketest.utils.DaoUtils;
 import org.opennms.smoketest.utils.HibernateDaoFactory;
 import org.opennms.test.system.api.NewTestEnvironment.ContainerAlias;
 import org.opennms.test.system.api.utils.SshClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.opennms.test.system.api.TestEnvironment;
 import org.opennms.test.system.api.TestEnvironmentBuilder;
 
+/**
+ * Verifies that Telemetry listeners can receive proto buffers and generate rrd
+ * files
+ *
+ * @author cgorantla
+ */
+
 public class TelemetryIT {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TelemetryIT.class);
     public static final String SENDER_IP = "192.168.1.1";
     public static final String SENDER_IP_MINION = "192.168.1.2";
 
@@ -71,6 +109,11 @@ public class TelemetryIT {
         }
         try {
             final TestEnvironmentBuilder builder = TestEnvironment.builder().all();
+            builder.withOpenNMSEnvironment()
+                    .addFile(TelemetryIT.class.getResource("/telemetryd-configuration.xml"),
+                            "etc/telemetryd-configuration.xml")
+                    .addFile(TelemetryIT.class.getResource("/telemetryd-adapters/junos-telemetry-interface.groovy"),
+                            "etc/telemetryd-adapters/junos-telemetry-interface.groovy");
             OpenNMSSeleniumTestCase.configureTestEnvironment(builder);
             m_testEnvironment = builder.build();
             return m_testEnvironment;
@@ -133,19 +176,18 @@ public class TelemetryIT {
                         DaoUtils.findMatchingCallable(nodeDao,
                                 new CriteriaBuilder(OnmsNode.class).eq("label", SENDER_IP).toCriteria()),
                         notNullValue());
-
+        LOG.info(" New suspect event has been sent and node has been created for IP : {}", SENDER_IP);
+        
         final InetSocketAddress opennmsUdp = m_testEnvironment.getServiceAddress(ContainerAlias.OPENNMS, 50000, "udp");
 
         TelemetryTop.TelemetryStream jtiMsg = buildJtiMessage(SENDER_IP, "eth0", 100, 100);
         byte[] jtiMsgBytes = jtiMsg.toByteArray();
         DatagramPacket packet = new DatagramPacket(jtiMsgBytes, jtiMsgBytes.length, opennmsUdp);
-        DatagramSocket socket;
-        try {
-            socket = new DatagramSocket();
+
+        try (DatagramSocket socket = new DatagramSocket()) {
             socket.send(packet);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("Exception while sending jti packets", e);
         }
         await().atMost(30, SECONDS).pollDelay(0, SECONDS).pollInterval(5, SECONDS)
                 .until(matchRrdFileFromNodeResource(opennmsHttp, executor, onmsNode.getId()));
@@ -227,18 +269,17 @@ public class TelemetryIT {
 
         assertThat(onmsNode.getLocation().getLocationName(), is("MINION"));
 
+        LOG.info(" New suspect event has been sent and node has been created for IP : {}", SENDER_IP_MINION);
         final InetSocketAddress minionUdp = m_testEnvironment.getServiceAddress(ContainerAlias.MINION, 50000, "udp");
 
         TelemetryTop.TelemetryStream jtiMsg = buildJtiMessage(SENDER_IP_MINION, "eth0", 100, 100);
         byte[] jtiMsgBytes = jtiMsg.toByteArray();
         DatagramPacket packet = new DatagramPacket(jtiMsgBytes, jtiMsgBytes.length, minionUdp);
-        DatagramSocket socket;
-        try {
-            socket = new DatagramSocket();
+
+        try (DatagramSocket socket = new DatagramSocket()) {
             socket.send(packet);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("Exception while sending jti packets", e);
         }
         await().atMost(2, MINUTES).pollDelay(0, SECONDS).pollInterval(15, SECONDS)
                 .until(matchRrdFileFromNodeResource(opennmsHttp, executor, onmsNode.getId()));
