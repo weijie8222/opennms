@@ -17,25 +17,22 @@
             args(%parm[##]%): %parm[all]%&lt;/p></descr>
       <logmsg dest="logndisplay">One or more problems are affecting business service '%parm[businessServiceName]%'.
         </logmsg>
-        <severity>Indeterminate</severity>
-        <alarm-data reduction-key="%uei%:%parm[businessServiceId]%" alarm-type="3" auto-clean="false">
-            <update-field field-name="severity" update-on-reduction="true"/>
-        </alarm-data>
-    </event>
-    <event>
-        <uei>uei.opennms.org/bsm/serviceProblemResolved</uei>
-        <event-label>Business Service Monitoring: Service Problem Resolved</event-label>
-        <descr>
-            &lt;p&gt;The problem affecting business service '%parm[businessServiceName]%' has been resolved.
-            args(%parm[##]%): %parm[all]%&lt;/p&gt;
-        </descr>
-        <logmsg dest="logndisplay">The problems affecting business service '%parm[businessServiceName]%' have been
+      <severity>Indeterminate</severity>
+      <alarm-data reduction-key="%uei%:%parm[businessServiceId]%" alarm-type="1" auto-clean="false">
+         <update-field field-name="severity" update-on-reduction="true"/>
+      </alarm-data>
+   </event>
+   <event>
+      <uei>uei.opennms.org/bsm/serviceProblemResolved</uei>
+      <event-label>Business Service Monitoring: Service Problem Resolved</event-label>
+      <descr>&lt;p>The problem affecting business service '%parm[businessServiceName]%' has been resolved.
+            args(%parm[##]%): %parm[all]%&lt;/p></descr>
+      <logmsg dest="logndisplay">The problems affecting business service '%parm[businessServiceName]%' have been
             resolved.
         </logmsg>
-        <severity>Indeterminate</severity>
-        <alarm-data reduction-key="uei.opennms.org/bsm/serviceProblem:%parm[businessServiceId]%" alarm-type="3"
-                    auto-clean="false">
-            <update-field field-name="severity" update-on-reduction="true"/>
-        </alarm-data>
-    </event>
+      <severity>Indeterminate</severity>
+      <alarm-data reduction-key="uei.opennms.org/bsm/serviceProblem:%parm[businessServiceId]%" alarm-type="2" auto-clean="false">
+         <update-field field-name="severity" update-on-reduction="true"/>
+      </alarm-data>
+   </event>
 </events>

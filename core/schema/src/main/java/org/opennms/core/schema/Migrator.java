@@ -217,7 +217,7 @@ public class Migrator {
                                              "Unsupported database version \"%f\" -- you need at least %f and less than %f.  "
                                                      + "Use the \"-Q\" option to disable this check if you feel brave and are willing "
                                                      + "to find and fix bugs found yourself.",
-                                                     dbv, POSTGRES_MIN_VERSION, POSTGRES_MAX_VERSION_PLUS_ONE
+                                                     dbv, POSTGRESQL_MIN_VERSION_INCLUSIVE, POSTGRESQL_MAX_VERSION_EXCLUSIVE
                 );
 
         if (dbv < POSTGRESQL_MIN_VERSION_INCLUSIVE || dbv >= POSTGRESQL_MAX_VERSION_EXCLUSIVE) {

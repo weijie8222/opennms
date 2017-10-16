@@ -29,6 +29,8 @@
 package org.opennms.smoketest;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 
@@ -348,26 +350,26 @@ public class TopologyIT extends OpenNMSSeleniumTestCase {
         private final OpenNMSSeleniumTestCase testCase;
 
         public TopologyInfo(OpenNMSSeleniumTestCase testCase) {
-           this.testCase = Objects.requireNonNull(testCase);
-       }
+            this.testCase = Objects.requireNonNull(testCase);
+        }
 
-       public String getTitle() {
-           try {
-               testCase.setImplicitWait(1, TimeUnit.SECONDS);
-               return testCase.findElementByXpath("//*[@id='topologyInfo']/*[1]").getText();
-           } finally {
-               testCase.setImplicitWait();
-           }
-       }
+        public String getTitle() {
+            try {
+                testCase.setImplicitWait(1, TimeUnit.SECONDS);
+                return testCase.findElementByXpath("//*[@id='topologyInfo']/*[1]").getText();
+            } finally {
+                testCase.setImplicitWait();
+            }
+        }
 
-       public String getDescription() {
-           try {
-               testCase.setImplicitWait(1, TimeUnit.SECONDS);
-               return testCase.findElementByXpath("//*[@id='topologyInfo']/*[2]").getText();
-           } finally {
-               testCase.setImplicitWait();
-           }
-       }
+        public String getDescription() {
+            try {
+                testCase.setImplicitWait(1, TimeUnit.SECONDS);
+                return testCase.findElementByXpath("//*[@id='topologyInfo']/*[2]").getText();
+            } finally {
+                testCase.setImplicitWait();
+            }
+        }
     }
 
     /**
@@ -700,6 +702,38 @@ public class TopologyIT extends OpenNMSSeleniumTestCase {
 
         public TopologyInfo getTopologyInfo() {
             return new TopologyInfo(testCase);
+        }
+
+        public TopologyUIPage searchAndSelect(String query) {
+            search(query).selectItemThatContains(query);
+            return this;
+        }
+
+        public NoFocusDefinedWindow getNoFocusDefinedWindow() {
+            return new NoFocusDefinedWindow(testCase);
+        }
+
+    }
+
+    public static class NoFocusDefinedWindow {
+        private final OpenNMSSeleniumTestCase testCase;
+
+        private NoFocusDefinedWindow(OpenNMSSeleniumTestCase testCase) {
+            this.testCase = Objects.requireNonNull(testCase);
+        }
+
+        public boolean isVisible() {
+            try {
+                // Reduce the timeout so we don't wait around for too long if there are no vertices in focus
+                testCase.setImplicitWait(1, TimeUnit.SECONDS);
+                try {
+                    return testCase.findElementById("no-focus-defined-window").isDisplayed();
+                } catch (NoSuchElementException ex) {
+                    return false;
+                }
+            } finally {
+                testCase.setImplicitWait();
+            }
         }
     }
 

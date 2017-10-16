@@ -312,4 +312,5 @@ include::text/ifttt/ifttt-integration.adoc[]
 
 [[ga-telemetryd]]
 == Telemetryd
-include::text/telemetry/telemetryd.adoc[]
+include::text/telemetryd/telemetryd.adoc[]
+

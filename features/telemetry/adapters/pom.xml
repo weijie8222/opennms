@@ -12,7 +12,5 @@
   <name>OpenNMS :: Features :: Telemetry :: Adapters</name>
   <modules>
     <module>api</module>
-    <module>collection</module>
-    <module>jti</module>
   </modules>
 </project>

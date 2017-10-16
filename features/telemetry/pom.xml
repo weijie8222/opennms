@@ -15,7 +15,6 @@
     <module>common</module>
     <module>config</module>
     <module>daemon</module>
-    <module>itests</module>
     <module>listeners</module>
     <module>minion</module>
   </modules>

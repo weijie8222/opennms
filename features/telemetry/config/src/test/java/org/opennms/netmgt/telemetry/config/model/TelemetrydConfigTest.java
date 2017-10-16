@@ -46,7 +46,7 @@ import java.util.Collection;
 
 public class TelemetrydConfigTest extends XmlTestNoCastor<TelemetrydConfiguration> {
     public TelemetrydConfigTest(TelemetrydConfiguration sampleObject, Object sampleXml) {
-        // FIXME: TODO: Provide XSD
+        // XSD will be created in HZN-1162
         super(sampleObject, sampleXml, null);
     }
 

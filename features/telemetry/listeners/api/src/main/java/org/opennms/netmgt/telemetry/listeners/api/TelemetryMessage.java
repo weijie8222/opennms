@@ -40,7 +40,6 @@ public class TelemetryMessage implements Message {
     private final InetSocketAddress source;
     private final ByteBuffer buffer;
 
-    // TODO: Why not just use the byte array?
     public TelemetryMessage(InetSocketAddress source, ByteBuffer buffer) {
         this.source = source;
         this.buffer = buffer;

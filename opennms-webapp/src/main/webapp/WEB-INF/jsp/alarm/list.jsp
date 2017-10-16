@@ -155,6 +155,10 @@
   <jsp:param name="breadcrumb" value="List" />
 </jsp:include>
 
+<c:url var="alarmListLink" value="alarm/list">
+  <c:param name="display" value="<%=parms.getDisplay()%>"/>
+</c:url>
+
 <% if(unAckFlash){ //style to make unacknowledged alarms flash %>
 <style media="screen" type="text/css">
 .blink_text {
