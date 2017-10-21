@@ -14,34 +14,16 @@
         http://aries.apache.org/schemas/blueprint-ext/blueprint-ext-1.1.xsd
 ">
 
-    <cm:property-placeholder id="minionProperties" persistent-id="org.opennms.minion.controller" placeholder-prefix="[[" placeholder-suffix="]]" update-strategy="reload">
+    <cm:property-placeholder id="jmsProperties" persistent-id="org.opennms.netmgt.core.jms" placeholder-prefix="[[" placeholder-suffix="]]" update-strategy="reload">
         <cm:default-properties>
-            <cm:property name="location" value="MINION"/>
-            <cm:property name="id" value="00000000-0000-0000-0000-000000ddba11"/>
             <cm:property name="broker-url" value="failover:tcp://127.0.0.1:61616"/>
             <cm:property name="broker-max-connections" value="8"/>
             <cm:property name="broker-concurrent-consumers" value="10"/>
             <cm:property name="broker-idle-timeout" value="0"/>
-            <cm:property name="http-url" value="http://127.0.0.1:8980/opennms"/>
         </cm:default-properties>
     </cm:property-placeholder>
 
     <reference id="secureCredentialsVault" interface="org.opennms.features.scv.api.SecureCredentialsVault" />
-
-    <!-- A canonical source for this Minion's identity -->
-    <bean id="minionIdentity" class="org.opennms.netmgt.core.jms.MinionIdentityImpl">
-       <argument value="[[location]]"/>
-       <argument value="[[id]]"/>
-    </bean>
-    <service ref="minionIdentity" interface="org.opennms.minion.core.api.MinionIdentity"/>
-
-    <!-- REST Client used to communicate with the OpenNMS controller -->
-    <bean id="restClient" class="org.opennms.netmgt.core.jms.ScvEnabledRestClientImpl">
-        <argument value="[[http-url]]"/>
-        <argument ref="secureCredentialsVault"/>
-        <argument value="opennms.http"/>
-    </bean>
-    <service ref="restClient" interface="org.opennms.minion.core.api.RestClient"/>
 
     <!-- Connection factory used by the Camel component and shell commands -->
     <bean id="jmsConnectionFactory" class="org.opennms.netmgt.core.jms.ScvEnabledActiveMQConnectionFactory">

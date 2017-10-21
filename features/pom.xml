@@ -145,5 +145,7 @@
 
     <!-- IfTtt integration -->
     <module>ifttt</module>
+
+    <module>stooge</module>
   </modules>
 </project>
