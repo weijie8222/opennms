@@ -22,6 +22,7 @@
 	<service id="jtiFactoryService" ref="jtiFactory" interface="org.opennms.netmgt.telemetry.adapters.api.AdapterFactory">
 		<service-properties>
 			<entry key="registration.export" value="true" />
+			<entry key="type" value="org.opennms.netmgt.telemetry.adapters.jti.JtiGpbAdapter" />
 		</service-properties>
 	</service>
 
