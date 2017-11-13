@@ -28,30 +28,37 @@
 
 package org.opennms.features.topology.plugins.topo.asset.cmd;
 
-
-import java.io.StringWriter;
-
-import javax.xml.bind.JAXB;
-
-import org.apache.felix.gogo.commands.Command;
-import org.apache.felix.gogo.commands.Option;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.Option;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
+import org.opennms.core.xml.JaxbUtils;
 import org.opennms.features.topology.plugins.topo.asset.AssetGraphMLProvider;
 import org.opennms.features.topology.plugins.topo.asset.GeneratorConfig;
 import org.opennms.features.topology.plugins.topo.asset.GeneratorConfigBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * <p>This command implements the Apache Karaf 3 and Apache Karaf 4 shell APIs.
+ * Once the Karaf 4 commands work, the deprecated Karaf 3 annotations should 
+ * be removed:</p>
+ * <ul>
+ * <li>{@link org.apache.karaf.shell.commands.Command}</li>
+ * <li>{@link org.apache.karaf.shell.console.OsgiCommandSupport}</li>
+ * </ul>
+ */
 @Command(scope = "asset-topology", name = "create", description="Creates Asset Topology. Uses default config if options are not supplied.")
-public class CreateAssetTopologyCommand extends OsgiCommandSupport {
+@org.apache.karaf.shell.commands.Command(scope = "asset-topology", name = "create", description="Creates Asset Topology. Uses default config if options are not supplied.")
+@Service
+public class CreateAssetTopologyCommand extends OsgiCommandSupport implements Action {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CreateAssetTopologyCommand.class);
 
-	private final AssetGraphMLProvider assetGraphMLProvider;
-
-	public CreateAssetTopologyCommand(AssetGraphMLProvider assetGraphMLProvider) {
-		this.assetGraphMLProvider = assetGraphMLProvider;
-	}
+	@Reference
+	public AssetGraphMLProvider assetGraphMLProvider;
 
 	@Option(name = "-i", aliases =  "--providerId", description = "Unique providerId of asset topology", required = false, multiValued = false)
 	String providerId;
@@ -73,7 +80,7 @@ public class CreateAssetTopologyCommand extends OsgiCommandSupport {
 	String preferredLayout;
 
 	@Override
-	protected Object doExecute() throws Exception {
+	public Object execute() throws Exception {
 		final GeneratorConfig generatorConfig = new GeneratorConfigBuilder()
 			.withProviderId(providerId)
 			.withHierarchy(hierarchy)
@@ -84,16 +91,22 @@ public class CreateAssetTopologyCommand extends OsgiCommandSupport {
 			.build();
 
 		// Build output
-		StringWriter generatorConfigString = new StringWriter();
-		JAXB.marshal(generatorConfig, generatorConfigString);
-
-		StringBuffer msg = new StringBuffer("Creating Asset Topology from configuration:");
-		msg.append(generatorConfigString.toString());
-		System.out.println(msg.toString());
+		System.out.println("Creating Asset Topology from configuration:");
+		System.out.print(JaxbUtils.marshal(generatorConfig));
 
 		assetGraphMLProvider.createAssetTopology(generatorConfig);
 		System.out.println("Asset Topology created");
 		return null;
 	}
-}
 
+	@Override
+	@Deprecated
+	protected Object doExecute() throws Exception {
+		return execute();
+	}
+
+	@Deprecated
+	public void setAssetGraphMLProvider(AssetGraphMLProvider assetGraphMLProvider) {
+		this.assetGraphMLProvider = assetGraphMLProvider;
+	}
+}

@@ -53,7 +53,7 @@ public class MattermostNotificationStrategy extends AbstractSlackCompatibleNotif
     
     @Override
 	protected String formatWebhookErrorResponse(int statusCode, String contents) {
-    	StringBuilder bldr = new StringBuilder("Response code: ");
+    	final StringBuilder bldr = new StringBuilder("Response code: ");
     	bldr.append(statusCode);
     	
     	JSONObject errorJson = new JSONObject();
@@ -65,7 +65,7 @@ public class MattermostNotificationStrategy extends AbstractSlackCompatibleNotif
 				errorJson = (JSONObject)parsedError;
 			}
 		} catch (ParseException e) {
-			LOG.warn("Got some non-JSON error.");
+			LOG.warn("Got some non-JSON error.", e);
 			bldr.append(" Contents:").append(contents);
 			return bldr.toString();
 		}
@@ -80,8 +80,11 @@ public class MattermostNotificationStrategy extends AbstractSlackCompatibleNotif
 
     @Override
 	protected String decorateMessageSubject(String subject) {
-    	StringBuilder bldr = new StringBuilder("#### ");
-    	bldr.append(subject).append("\n");
+    	if ("".equals(subject)) {
+    		return "";
+    	}
+    	final StringBuilder bldr = new StringBuilder("**");
+    	bldr.append(subject).append("**").append("\n");
     	return bldr.toString();
     }
     

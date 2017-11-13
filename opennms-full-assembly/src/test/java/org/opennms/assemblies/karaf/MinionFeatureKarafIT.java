@@ -56,6 +56,7 @@ public class MinionFeatureKarafIT extends KarafTestCase {
 	public void setUp() {
 		final String version = getOpenNMSVersion();
 		addFeaturesUrl(maven().groupId("org.opennms.container").artifactId("org.opennms.container.karaf").version(version).type("xml").classifier("features").getURL());
+		addFeaturesUrl(maven().groupId("org.opennms.container").artifactId("org.opennms.container.karaf").version(version).type("xml").classifier("spring-legacy").getURL());
 		// This artifact contains Minion-only Karaf features
 		addFeaturesUrl(maven().groupId("org.opennms.karaf").artifactId("opennms").version(version).type("xml").classifier("minion").getURL());
 	}
@@ -106,12 +107,6 @@ public class MinionFeatureKarafIT extends KarafTestCase {
 	@Test
 	public void testInstallFeatureMinionPoller() {
 		installFeature("minion-poller");
-		System.out.println(executeCommand("feature:list -i"));
-	}
-
-	@Test
-	public void testInstallFeatureMinionRpcServer() {
-		installFeature("minion-rpc-server");
 		System.out.println(executeCommand("feature:list -i"));
 	}
 

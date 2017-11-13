@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.opennms</groupId>
     <artifactId>org.opennms.container</artifactId>
-    <version>21.0.0-SNAPSHOT</version>
+    <version>22.0.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.opennms.karaf</groupId>
@@ -31,6 +31,7 @@
             <value>framework-${karafVersion}</value>
             <value>enterprise-${karafVersion}</value>
             <value>spring-${karafVersion}</value>
+            <value>spring-legacy-${karafVersion}</value>
             <value>standard-${karafVersion}</value>
 
             <!-- Apache CXF -->
@@ -135,6 +136,9 @@
             <!-- Internal Plugins Descriptor -->
             <repository>mvn:org.opennms.plugins/internal-plugins-descriptor/${project.version}/xml/features</repository>
 
+            <!-- IFTTT Integration -->
+            <repository>mvn:org.opennms.features/org.opennms.features.ifttt/${project.version}/xml/features</repository>
+
           </repositories>
 
           <!--
@@ -150,7 +154,6 @@
             <feature>framework</feature>
 
             <!-- Karaf standard features -->
-            <feature>aries-annotation</feature>
             <feature>aries-blueprint</feature>
             <feature>aries-proxy</feature>
             <feature>blueprint-web</feature>
@@ -161,14 +164,16 @@
             <feature>eventadmin</feature>
             <feature>feature</feature>
             <feature>framework-security</feature>
+            <feature>httplite</feature>
             <feature>http</feature>
             <feature>http-whiteboard</feature>
             <feature>instance</feature>
             <feature>jaas-boot</feature>
             <feature>jaas</feature>
             <feature>jasypt-encryption</feature>
-            <!-- TODO: Figure out how to import 2 versions of Jetty? -->
-            <feature>jetty</feature>
+            <!-- TODO: Should we import both versions of Jetty? -->
+            <feature>jetty/8.1.14.v20131031</feature>
+            <feature>jetty/9.3.9.v20160517</feature>
             <feature>jolokia</feature>
             <feature>kar</feature>
             <feature>log</feature>
@@ -176,6 +181,8 @@
             <feature>minimal</feature>
             <feature>obr</feature>
             <feature>package</feature>
+            <!-- Replaced by opennms-bridge-http-service -->
+            <!-- <feature>pax-http-service</feature> -->
             <feature>profile</feature>
             <feature>scheduler</feature>
             <feature>scr</feature>
@@ -231,6 +238,7 @@
             <feature>opennms-activemq-event-forwarder</feature>
             <feature>opennms-activemq-event-receiver</feature>
             -->
+            <feature>opennms-bundle-refresher</feature>
             <feature>opennms-collection-api</feature>
             <feature>opennms-collection-commands</feature>
             <feature>opennms-collection-persistence-rrd</feature>
@@ -326,6 +334,7 @@
             <feature>tsrm-troubleticketer</feature>
             <feature>datachoices</feature>
             <feature>eif-adapter</feature>
+            <feature>opennms-telemetry-jti</feature>
 
             <!-- BSM -->
             <feature>org.opennms.features.bsm.service.api</feature>
@@ -337,6 +346,9 @@
             <feature>alarm-change-notifier</feature>
             <feature>opennms-es-rest</feature>
             <feature>internal-plugins-descriptor</feature>
+
+            <!-- IFTTT Integration -->
+            <feature>ifttt-integration</feature>
           </features>
         </configuration>
       </plugin>
@@ -587,6 +599,13 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.opennms.features</groupId>
+      <artifactId>org.opennms.features.ifttt</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.opennms.features.vaadin-dashlets</groupId>
       <artifactId>dashlet-features</artifactId>
       <version>${project.version}</version>
@@ -751,6 +770,19 @@
       <artifactId>org.opennms.core.ipc.rpc.commands</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opennms.features.telemetry</groupId>
+      <artifactId>org.opennms.features.telemetry.minion</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opennms.features.vaadin-components</groupId>
+      <artifactId>bundle-refresher</artifactId>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

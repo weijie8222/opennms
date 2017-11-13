@@ -284,10 +284,10 @@ public class BsmdIT {
     public void verifyStartupTime() throws Exception {
         // generate test hierarchy
         GenerateHierarchiesShellCommand shellCommand = new GenerateHierarchiesShellCommand();
-        shellCommand.setBusinessServiceManager(businessServiceManager);
+        shellCommand.businessServiceManager = businessServiceManager;
         shellCommand.setNumServices(200 * 100); // 200 hierarchies
         shellCommand.setDepth(100); // 100 services each
-        shellCommand.execute(null);
+        shellCommand.execute();
         m_businessServiceDao.flush();
 
         // Measure startup time
@@ -357,7 +357,7 @@ public class BsmdIT {
         OnmsAlarm alarm = new OnmsAlarm();
         alarm.setUei(EventConstants.NODE_LOST_SERVICE_EVENT_UEI);
         alarm.setSeverity(OnmsSeverity.CRITICAL);
-        alarm.setAlarmType(1);
+        alarm.setAlarmType(OnmsAlarm.PROBLEM_TYPE);
         alarm.setCounter(1);
         alarm.setDistPoller(m_distPollerDao.whoami());
         alarm.setReductionKey(String.format("%s::1:192.168.1.1:ICMP", EventConstants.NODE_LOST_SERVICE_EVENT_UEI));
