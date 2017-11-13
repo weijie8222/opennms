@@ -10,7 +10,7 @@
 ">
 
 	<bean id="jtiFactory" class="org.opennms.netmgt.telemetry.adapters.jti.JtiAdapterFactory">
-		<argument ref="blueprintBundleContext" />
+		<property name="bundleContext" ref="blueprintBundleContext" />
 		<property name="collectionAgentFactory" ref="collectionAgentFactory" />
 		<property name="interfaceToNodeCache" ref="interfaceToNodeCache" />
 		<property name="nodeDao" ref="nodeDao" />
@@ -22,7 +22,6 @@
 	<service id="jtiFactoryService" ref="jtiFactory" interface="org.opennms.netmgt.telemetry.adapters.api.AdapterFactory">
 		<service-properties>
 			<entry key="registration.export" value="true" />
-			<entry key="type" value="org.opennms.netmgt.telemetry.adapters.jti.JtiGpbAdapter" />
 		</service-properties>
 	</service>
 

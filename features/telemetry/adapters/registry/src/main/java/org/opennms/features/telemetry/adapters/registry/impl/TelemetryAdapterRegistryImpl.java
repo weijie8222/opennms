@@ -28,22 +28,22 @@
 
 package org.opennms.features.telemetry.adapters.registry.impl;
 
-import java.lang.management.ManagementFactory;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ServiceLoader;
-
 import org.opennms.core.soa.lookup.ServiceLookupBuilder;
-import org.opennms.netmgt.telemetry.adapters.api.AdapterFactory;
 import org.opennms.features.telemetry.adapters.registry.api.TelemetryAdapterRegistry;
 import org.opennms.netmgt.telemetry.adapters.api.Adapter;
+import org.opennms.netmgt.telemetry.adapters.api.AdapterFactory;
 import org.opennms.netmgt.telemetry.config.api.Protocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
+
+import java.lang.management.ManagementFactory;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.ServiceLoader;
 
 /**
  * Maintains the list of available telemtryd adapters, aggregating
@@ -57,8 +57,6 @@ public class TelemetryAdapterRegistryImpl implements TelemetryAdapterRegistry {
     private static final Logger LOG = LoggerFactory.getLogger(TelemetryAdapterRegistry.class);
 
     private static final ServiceLoader<AdapterFactory> s_adapterFactoryLoader = ServiceLoader.load(AdapterFactory.class);
-
-    private static final String TYPE = "type";
 
     private final Map<String, AdapterFactoryRegistration> m_adapterFactoryByClassName = new HashMap<>();
 
@@ -77,13 +75,8 @@ public class TelemetryAdapterRegistryImpl implements TelemetryAdapterRegistry {
     public synchronized void onBind(AdapterFactory adapterFactory, Map properties) {
         LOG.debug("Bind called with {}: {}", adapterFactory, properties);
         if (adapterFactory != null) {
-            final String className = getClassName(properties);
-            if (className == null) {
-                LOG.warn("Unable to determine the class name for AdapterFactory: {}, with properties: {}. The adapter will not be registered.",
-                        adapterFactory, properties);
-                return;
-            }
-            m_adapterFactoryByClassName.put(className, new AdapterFactoryRegistration(className, adapterFactory, false));
+            final String adapterClass = adapterFactory.getAdapterClass().getCanonicalName();
+            m_adapterFactoryByClassName.put(adapterClass, new AdapterFactoryRegistration(adapterClass, adapterFactory, false));
         }
     }
 
@@ -91,13 +84,7 @@ public class TelemetryAdapterRegistryImpl implements TelemetryAdapterRegistry {
     public synchronized void onUnbind(AdapterFactory adapterFactory, Map properties) {
         LOG.debug("Unbind called with {}: {}", adapterFactory, properties);
         if (adapterFactory != null) {
-            final String className = getClassName(properties);
-            if (className == null) {
-                LOG.warn("Unable to determine the class name for AdapterFactory: {}, with properties: {}. The adapter will not be unregistered.",
-                        adapterFactory, properties);
-                return;
-            }
-            m_adapterFactoryByClassName.remove(className);
+            m_adapterFactoryByClassName.remove(adapterFactory.getAdapterClass().getCanonicalName());
         }
     }
 
@@ -126,14 +113,6 @@ public class TelemetryAdapterRegistryImpl implements TelemetryAdapterRegistry {
         }
 
         return adapter;
-    }
-
-    private static String getClassName(Map<?, ?> properties) {
-        final Object type = properties.get(TYPE);
-        if (type != null && type instanceof String) {
-            return (String) type;
-        }
-        return null;
     }
 
     private static class AdapterFactoryRegistration {
