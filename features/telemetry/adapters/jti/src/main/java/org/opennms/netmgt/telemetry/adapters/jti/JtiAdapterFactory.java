@@ -30,7 +30,7 @@ package org.opennms.netmgt.telemetry.adapters.jti;
 
 import java.util.Map;
 
-import org.opennms.features.telemetry.adapters.factory.api.AdapterFactory;
+import org.opennms.netmgt.telemetry.adapters.api.AdapterFactory;
 import org.opennms.netmgt.collection.api.CollectionAgentFactory;
 import org.opennms.netmgt.collection.api.PersisterFactory;
 import org.opennms.netmgt.dao.api.InterfaceToNodeCache;
@@ -63,8 +63,12 @@ public class JtiAdapterFactory implements AdapterFactory {
         this.bundleContext = m_bundleContext;
     }
 
-    public Adapter createAdapter(Protocol protocol, Map<String, String> properties) {
+    @Override
+    public Class<? extends Adapter> getAdapterClass() {
+        return JtiGpbAdapter.class;
+    }
 
+    public Adapter createAdapter(Protocol protocol, Map<String, String> properties) {
         final JtiGpbAdapter adapter = new JtiGpbAdapter();
         adapter.setProtocol(protocol);
         adapter.setCollectionAgentFactory(getCollectionAgentFactory());
