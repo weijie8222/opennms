@@ -37,6 +37,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opennms.core.test.OpenNMSJUnit4ClassRunner;
 import org.opennms.core.test.db.annotations.JUnitTemporaryDatabase;
+import org.opennms.core.utils.WebSecurityUtils;
 import org.opennms.netmgt.dao.DatabasePopulator;
 import org.opennms.netmgt.dao.DatabasePopulator.DaoSupport;
 import org.opennms.netmgt.dao.api.FilterFavoriteDao;
@@ -161,7 +162,22 @@ public class FilterFavoriteServiceIT {
         Assert.assertEquals(true, service.deleteFavorite(favorite.getId(), "mvr")); // does belong to this user
         Assert.assertNull(service.getFavorite(favorite.getId(), "mvr")); // check original user, should be deleted
     }
-    
+
+    @Test
+    public void verifyXSS() throws FilterFavoriteService.FilterFavoriteException {
+        final String maliciousName = "test<script>alert(123);</script>";
+        final String maliciousFilter = "filter=severity%3D6<script>alert(123);</script>";
+
+        for (Page page : Page.values()) {
+            // try to create malicious favorites
+            OnmsFilterFavorite favorite = service.createFavorite("ulf", maliciousName, maliciousFilter, page);
+
+            // verify that filter name and criteria are not vulnerable to xss
+            Assert.assertEquals(WebSecurityUtils.sanitizeString(maliciousName), favorite.getName());
+            Assert.assertEquals(WebSecurityUtils.sanitizeString(maliciousFilter), favorite.getFilter());
+        }
+    }
+
     private static interface AssertionCallback {
         void validate(OnmsFilterFavorite favoriteToCreate, OnmsFilterFavorite createdFavorite);
     }

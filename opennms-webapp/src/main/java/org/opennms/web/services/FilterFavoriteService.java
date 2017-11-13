@@ -29,6 +29,7 @@
 package org.opennms.web.services;
 
 import org.apache.commons.lang.StringUtils;
+import org.opennms.core.utils.WebSecurityUtils;
 import org.opennms.netmgt.dao.api.FilterFavoriteDao;
 import org.opennms.netmgt.model.OnmsFilterFavorite;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,7 +135,14 @@ public class FilterFavoriteService {
     }
 
     public OnmsFilterFavorite createFavorite(String userName, String favoriteName, String filterString, OnmsFilterFavorite.Page page) throws FilterFavoriteException {
+        // Sanitize input
+        favoriteName = WebSecurityUtils.sanitizeString(favoriteName);
+        filterString = WebSecurityUtils.sanitizeString(filterString);
+
+        // Validate input
         validate(userName, favoriteName, filterString, page);
+
+        // Create filter
         OnmsFilterFavorite filter = new OnmsFilterFavorite();
         filter.setUsername(userName);
         filter.setFilter(filterString);
@@ -161,7 +169,7 @@ public class FilterFavoriteService {
         }
     }
 
-    private boolean deleteFavorite(OnmsFilterFavorite favorite) {
+    protected boolean deleteFavorite(OnmsFilterFavorite favorite) {
         if (favorite != null) {
             favoriteDao.delete(favorite);
             return true;
